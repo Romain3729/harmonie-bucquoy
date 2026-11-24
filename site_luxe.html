@@ -7,17 +7,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --black: #0c0c0c;
-      --dark: #1a1a1a;
-      --mid: #3a3a3a;
-      --gray: #6b6b6b;
-      --silver: #9a9a9a;
-      --light: #e8e4dc;
-      --ivory: #faf8f4;
-      --cream: #f5f2ec;
-      --gold: #b8952a;
-      --gold-light: #d4b050;
-      --gold-pale: #f7f0e0;
+      /* velours du rideau de scène, laiton des cuivres, papier des partitions */
+      --black: #2b1117;      /* velours sombre (remplace le noir) */
+      --velvet: #5e1b28;     /* bordeaux */
+      --velvet-soft: #7a2a37;
+      --dark: #3a1820;
+      --mid: #4a3530;        /* texte brun chaud */
+      --gray: #7d675d;
+      --silver: #a48f84;
+      --light: #e6d6bd;      /* filets */
+      --ivory: #f8efdf;      /* papier à musique */
+      --cream: #f0e1c7;      /* papier vieilli */
+      --paper: #fbf4e6;      /* texte clair sur fond sombre */
+      --gold: #b5852c;       /* laiton */
+      --gold-light: #ddb05a;
+      --gold-pale: #f5e5c4;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -87,7 +91,7 @@
       padding: 0.45rem 1.2rem;
       transition: all 0.3s !important;
     }
-    .nav-cta:hover { background: var(--gold) !important; color: white !important; }
+    .nav-cta:hover { background: var(--gold) !important; color: var(--paper) !important; }
 
     /* ── Utilitaires ── */
     .container { max-width: 1060px; margin: 0 auto; padding: 0 3rem; }
@@ -126,7 +130,7 @@
       display: inline-block;
       padding: 0.85rem 2.5rem;
       background: var(--gold);
-      color: white;
+      color: var(--paper);
       text-decoration: none;
       font-size: 0.7rem;
       font-weight: 500;
@@ -162,7 +166,7 @@
       border: 1px solid rgba(255,255,255,0.3);
       transition: all 0.3s;
     }
-    .btn-outline-white:hover { border-color: white; color: white; }
+    .btn-outline-white:hover { border-color: var(--paper); color: var(--paper); }
 
     /* ── Hero : photo plein cadre ── */
     #accueil {
@@ -185,8 +189,8 @@
     #accueil::before {
       content: ''; position: absolute; inset: 0; z-index: -1;
       background:
-        linear-gradient(0deg, rgba(10,10,10,.92) 0%, rgba(10,10,10,.55) 38%, rgba(10,10,10,.15) 70%, rgba(10,10,10,.35) 100%),
-        linear-gradient(90deg, rgba(10,10,10,.6) 0%, rgba(10,10,10,0) 60%);
+        linear-gradient(0deg, rgba(43,17,23,.92) 0%, rgba(43,17,23,.55) 38%, rgba(43,17,23,.15) 70%, rgba(43,17,23,.35) 100%),
+        linear-gradient(90deg, rgba(43,17,23,.6) 0%, rgba(43,17,23,0) 60%);
     }
     @keyframes hero-zoom { from { transform: scale(1.08); } to { transform: scale(1); } }
     .hero-left {
@@ -208,7 +212,7 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(3.2rem, 8vw, 7rem);
       font-weight: 300;
-      color: white;
+      color: var(--paper);
       line-height: 0.98;
       letter-spacing: 0.02em;
       margin-bottom: 1.2rem;
@@ -224,10 +228,10 @@
     }
     .hero-desc { font-weight: 300; color: rgba(255,255,255,0.85); max-width: 480px; margin-bottom: 2.4rem; line-height: 1.8; text-shadow: 0 1px 12px rgba(0,0,0,.5); }
     .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
-    .hero-actions .btn-outline-white { background: rgba(10,10,10,.25); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    .hero-actions .btn-outline-white { background: rgba(43,17,23,.25); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
     /* bandeau bas : concerts + chiffres */
     .hero-right {
-      background: rgba(10,10,10,.72);
+      background: rgba(43,17,23,.72);
       backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
       border-top: 1px solid rgba(184,149,42,0.35);
     }
@@ -249,7 +253,7 @@
     }
     .concert-luxe:hover { border-color: var(--gold-light); }
     .cl-date { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 0.4rem; }
-    .cl-name { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 400; color: white; margin-bottom: 0.2rem; line-height: 1.2; }
+    .cl-name { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 400; color: var(--paper); margin-bottom: 0.2rem; line-height: 1.2; }
     .cl-lieu { font-size: 0.72rem; color: rgba(255,255,255,0.6); letter-spacing: 0.04em; }
     .hero-stats {
       display: flex;
@@ -269,7 +273,7 @@
     /* ── Sections ── */
     section { padding: 7rem 0; }
     .section-center { text-align: center; margin-bottom: 5rem; }
-    .thin-rule { width: 40px; height: 1px; background: var(--gold); margin: 1.5rem auto; }
+    .thin-rule { width: 64px; height: 13px; background: repeating-linear-gradient(to bottom, var(--gold) 0 1px, transparent 1px 3px); margin: 1.5rem auto; opacity: .8; }
 
     /* ── Histoire ── */
     #histoire { background: var(--ivory); }
@@ -315,7 +319,7 @@
     .bl-role { font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--silver); }
 
     /* ── Rejoindre ── */
-    #rejoindre { background: var(--black); color: white; }
+    #rejoindre { background: radial-gradient(120% 90% at 85% 0%, var(--velvet-soft) 0%, var(--velvet) 45%, var(--black) 100%); color: var(--paper); }
     .rejoindre-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; margin-top: 4rem; }
     .instr-list-luxe { margin-bottom: 2.5rem; }
     .instr-list-luxe .il-item {
@@ -334,32 +338,39 @@
     .il-key { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); flex-shrink: 0; width: 90px; margin-top: 0.15rem; }
     .il-val { font-size: 0.88rem; font-weight: 300; color: rgba(255,255,255,0.65); }
     .form-luxe { }
-    .form-luxe .fl-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: white; margin-bottom: 2rem; }
+    .form-luxe .fl-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: var(--paper); margin-bottom: 2rem; }
     .fl-group { margin-bottom: 1.5rem; }
-    .fl-group label { display: block; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 0.5rem; }
+    .fl-group label { display: block; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(251,244,230,0.65); margin-bottom: 0.5rem; }
     .fl-group input, .fl-group select, .fl-group textarea {
       width: 100%;
       padding: 0.7rem 0;
       background: transparent;
       border: none;
-      border-bottom: 1px solid rgba(255,255,255,0.12);
-      color: white;
+      border-bottom: 1px solid rgba(251,244,230,0.25);
+      color: var(--paper);
       font-family: 'Jost', sans-serif;
       font-size: 0.9rem;
       font-weight: 300;
       outline: none;
       transition: border-color 0.3s;
     }
-    .fl-group input::placeholder, .fl-group textarea::placeholder { color: rgba(255,255,255,0.2); }
+    .fl-group input::placeholder, .fl-group textarea::placeholder { color: rgba(251,244,230,0.4); }
     .fl-group input:focus, .fl-group select:focus, .fl-group textarea:focus { border-color: var(--gold); }
     .fl-group select option { background: var(--dark); }
     .fl-group textarea { min-height: 80px; resize: vertical; }
     .fl-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    /* formulaire de contact : sur fond clair */
+    #contact .form-luxe { background: var(--ivory); border: 1px solid var(--light); padding: 2.5rem; }
+    #contact .form-luxe .fl-title { color: var(--velvet); }
+    #contact .fl-group label { color: var(--gray); }
+    #contact .fl-group input, #contact .fl-group select, #contact .fl-group textarea { color: var(--mid); border-bottom-color: var(--light); }
+    #contact .fl-group input::placeholder, #contact .fl-group textarea::placeholder { color: var(--silver); }
+    #contact .fl-group select option { background: var(--ivory); }
     .fl-submit {
       margin-top: 1rem;
       padding: 0.85rem 2.5rem;
       background: var(--gold);
-      color: white;
+      color: var(--paper);
       border: none;
       font-family: 'Jost', sans-serif;
       font-size: 0.7rem;
@@ -374,7 +385,7 @@
     /* ── Agenda ── */
     #agenda { background: var(--cream); }
     .agenda-hero {
-      background: var(--black);
+      background: linear-gradient(120deg, var(--velvet) 0%, var(--black) 100%);
       padding: 3rem 4rem;
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -385,7 +396,7 @@
     .ah-left { }
     .ah-date { font-family: 'Cormorant Garamond', serif; font-size: 5rem; font-weight: 300; color: var(--gold-light); line-height: 1; letter-spacing: -0.02em; }
     .ah-month { font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-top: 0.3rem; }
-    .ah-right h3 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; color: white; margin-bottom: 0.8rem; }
+    .ah-right h3 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; color: var(--paper); margin-bottom: 0.8rem; }
     .ah-right .meta { font-size: 0.82rem; font-weight: 300; color: rgba(255,255,255,0.45); display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1.5rem; }
     .events-luxe { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--light); margin-bottom: 3rem; }
     .el-card { padding: 2rem 1.8rem; border-right: 1px solid var(--light); }
@@ -409,11 +420,11 @@
     .gl-item { overflow: hidden; position: relative; }
     .gl-item:nth-child(1) { grid-row: span 2; }
     .gl-ph { width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 1.2rem; }
-    .gl-item:nth-child(1) .gl-ph { background: linear-gradient(160deg, #1a1a1a 0%, #2d2015 100%); }
-    .gl-item:nth-child(2) .gl-ph { background: linear-gradient(135deg, #111 0%, #1e1500 100%); }
-    .gl-item:nth-child(3) .gl-ph { background: linear-gradient(135deg, #0d0d0d 0%, #1a1a0a 100%); }
-    .gl-item:nth-child(4) .gl-ph { background: linear-gradient(135deg, #121208 0%, #1f1f10 100%); }
-    .gl-item:nth-child(5) .gl-ph { background: linear-gradient(135deg, #0e0e0a 0%, #1a1a05 100%); }
+    .gl-item:nth-child(1) .gl-ph { background: linear-gradient(135deg, #5e1b28 0%, #2b1117 100%); }
+    .gl-item:nth-child(2) .gl-ph { background: linear-gradient(135deg, #7a2a37 0%, #3a1820 100%); }
+    .gl-item:nth-child(3) .gl-ph { background: linear-gradient(135deg, #3a1820 0%, #6b4a1f 100%); }
+    .gl-item:nth-child(4) .gl-ph { background: linear-gradient(135deg, #2b1117 0%, #5e1b28 100%); }
+    .gl-item:nth-child(5) .gl-ph { background: linear-gradient(135deg, #6b4a1f 0%, #2b1117 100%); }
     .gl-label { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
     .media-luxe { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--light); }
     .ml-item { padding: 1.5rem 1.2rem; border-right: 1px solid var(--light); display: flex; flex-direction: column; gap: 0.5rem; }
@@ -446,11 +457,11 @@
     .pluxe-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--black); margin-bottom: 0.3rem; }
     .pluxe-type { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--silver); }
     .don-luxe {
-      background: var(--black);
+      background: radial-gradient(100% 120% at 50% 0%, var(--velvet-soft) 0%, var(--velvet) 50%, var(--black) 100%);
       padding: 5rem 6rem;
       text-align: center;
     }
-    .don-luxe h3 { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300; color: white; margin-bottom: 1rem; }
+    .don-luxe h3 { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300; color: var(--paper); margin-bottom: 1rem; }
     .don-luxe h3 em { color: var(--gold-light); font-style: italic; }
     .don-luxe p { font-size: 0.9rem; font-weight: 300; color: rgba(255,255,255,0.4); max-width: 500px; margin: 0 auto 2.5rem; line-height: 1.85; }
     .don-btns { display: flex; gap: 1rem; justify-content: center; }
@@ -459,7 +470,7 @@
     footer { background: var(--black); padding: 4rem 3rem 2rem; }
     .footer-inner { max-width: 1060px; margin: 0 auto; }
     .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4rem; padding-bottom: 3rem; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 2rem; }
-    .ft-brand .ftb-name { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 300; color: white; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
+    .ft-brand .ftb-name { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 300; color: var(--paper); letter-spacing: 0.08em; margin-bottom: 0.3rem; }
     .ft-brand .ftb-sub { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,255,255,0.2); margin-bottom: 1rem; }
     .ft-brand .ftb-desc { font-size: 0.78rem; font-weight: 300; color: rgba(255,255,255,0.3); line-height: 1.7; }
     .ft-col h4 { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,255,255,0.25); margin-bottom: 1rem; }
@@ -630,7 +641,7 @@
             <div class="il-item">Percussions</div>
           </div>
           <div class="info-luxe">
-            <div class="il-row"><span class="il-key">Répétitions</span><span class="il-val">Mercredi · 20h00 – 22h00<br>Salle polyvalente, 62116 Bucquoy</span></div>
+            <div class="il-row"><span class="il-key">Répétitions</span><span class="il-val">Vendredi · 20h00 – 22h00<br>Salle polyvalente, 62116 Bucquoy</span></div>
             <div class="il-row"><span class="il-key">Niveau</span><span class="il-val">Tous niveaux acceptés — audition informelle</span></div>
             <div class="il-row"><span class="il-key">Cotisation</span><span class="il-val">Adultes 80 € · Jeunes 50 € / an</span></div>
           </div>
@@ -730,14 +741,12 @@
         <div class="cinfo-luxe">
           <h3>Informations pratiques</h3>
           <div class="cluxe-row"><span class="clr-key">Adresse</span><span class="clr-val">Salle polyvalente · Rue de la Mairie · 62116 Bucquoy</span></div>
-          <div class="cluxe-row"><span class="clr-key">Répétitions</span><span class="clr-val">Mercredi · 20h00 – 22h00</span></div>
-          <div class="cluxe-row"><span class="clr-key">E-mail</span><span class="clr-val"><a href="mailto:harmonie.bucquoy@gmail.com">harmonie.bucquoy@gmail.com</a></span></div>
-          <div class="cluxe-row"><span class="clr-key">Téléphone</span><span class="clr-val"><a href="tel:+33612345678">06 12 34 56 78</a></span></div>
+          <div class="cluxe-row"><span class="clr-key">Répétitions</span><span class="clr-val">Vendredi · 20h00 – 22h00</span></div>
+          <div class="cluxe-row"><span class="clr-key">E-mail</span><span class="clr-val"><a href="mailto:contact@harmonie-bucquoy.fr">contact@harmonie-bucquoy.fr</a></span></div>
+          <div class="cluxe-row"><span class="clr-key">Téléphone</span><span class="clr-val"><a href="tel:+33670900086">06 70 90 00 86</a></span></div>
           <div class="map-luxe">[ Carte — Salle polyvalente de Bucquoy ]</div>
           <div class="socials-luxe">
-            <a href="#" class="sl-link">Facebook</a>
-            <a href="#" class="sl-link">YouTube</a>
-            <a href="#" class="sl-link">Instagram</a>
+            <a href="https://www.facebook.com/p/Orchestre-dHarmonie-de-Bucquoy-100063508093307/" class="sl-link" target="_blank" rel="noopener">Facebook</a>
           </div>
         </div>
         <div class="form-luxe">
