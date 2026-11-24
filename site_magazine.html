@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'Harmonie de Bucquoy — Magazine Culturel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #c0122a;
+      --red-dark: #8f0d1e;
+      --red-pale: #fdf2f4;
+      --black: #111111;
+      --dark: #222222;
+      --mid: #444444;
+      --gray: #777777;
+      --silver: #aaaaaa;
+      --light: #dddddd;
+      --off: #f7f7f5;
+      --white: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Source Sans 3', sans-serif; background: var(--white); color: var(--mid); font-size: 16px; line-height: 1.65; }
+
+    /* ── Bandeau supérieur ── */
+    .masthead {
+      border-bottom: 3px solid var(--black);
+      padding: 1.5rem 3rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      max-width: 100%;
+    }
+    .masthead-center { text-align: center; flex: 1; }
+    .masthead-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      color: var(--black);
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+    .masthead-title em { font-style: normal; color: var(--red); }
+    .masthead-sub {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--silver);
+      margin-top: 0.4rem;
+    }
+    .masthead-left, .masthead-right {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--silver);
+      width: 180px;
+    }
+    .masthead-right { text-align: right; }
+
+    /* ── Nav Ruban ── */
+    nav {
+      position: sticky;
+      top: 0;
+      background: var(--black);
+      z-index: 1000;
+    }
+    .nav-ribbon {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 44px;
+    }
+    .nav-ribbon ul { display: flex; list-style: none; gap: 0; }
+    .nav-ribbon a {
+      display: block;
+      padding: 0 1rem;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      height: 44px;
+      line-height: 44px;
+      transition: all 0.2s;
+    }
+    .nav-ribbon a:hover { color: white; background: rgba(255,255,255,0.06); }
+    .nav-ribbon a.red { background: var(--red); color: white; }
+    .nav-ribbon a.red:hover { background: var(--red-dark); }
+    .nav-date { font-size: 0.68rem; color: rgba(255,255,255,0.35); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* ── Utilitaires ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+    .rule { border: none; border-top: 1px solid var(--light); margin: 2rem 0; }
+    .rule.thick { border-top-width: 3px; border-color: var(--black); }
+    .rule.red { border-color: var(--red); }
+
+    .cat-label {
+      display: inline-block;
+      background: var(--red);
+      color: white;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+    .section-number {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 5rem;
+      font-weight: 700;
+      color: var(--red);
+      opacity: 0.08;
+      line-height: 1;
+      position: absolute;
+      top: -1rem;
+      left: -1rem;
+      user-select: none;
+    }
+
+    .headline-mag {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .headline-mag em { font-style: italic; color: var(--red); }
+
+    .byline { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--silver); border-top: 1px solid var(--light); padding-top: 0.6rem; margin-top: 0.6rem; }
+
+    .btn-red {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background: var(--red);
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: background 0.2s;
+      font-family: 'Source Sans 3', sans-serif;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-red:hover { background: var(--red-dark); }
+    .btn-outline {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background: transparent;
+      color: var(--black);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: 2px solid var(--black);
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { background: var(--black); color: white; }
+
+    /* ── Hero / Accueil ── */
+    #accueil { padding: 3rem 0; border-bottom: 3px solid var(--black); }
+    .hero-mag {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .hero-main { }
+    .hero-cat { margin-bottom: 1rem; }
+    .hero-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+    .hero-title em { display: block; font-style: italic; color: var(--red); font-size: 0.7em; }
+    .hero-deck { font-family: 'Libre Baskerville', serif; font-size: 1.1rem; font-weight: 400; font-style: italic; color: var(--mid); line-height: 1.6; margin-bottom: 1.5rem; }
+    .hero-text { font-size: 0.95rem; color: var(--gray); line-height: 1.75; margin-bottom: 2rem; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .hero-metrics { display: flex; gap: 2rem; padding: 1.5rem 0; border-top: 2px solid var(--black); border-bottom: 1px solid var(--light); }
+    .hm-item { }
+    .hm-num { font-family: 'Libre Baskerville', serif; font-size: 2rem; font-weight: 700; color: var(--black); line-height: 1; letter-spacing: -0.04em; }
+    .hm-label { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--silver); margin-top: 0.2rem; }
+    .hero-sidebar { }
+    .concerts-mag { display: flex; flex-direction: column; gap: 0; }
+    .concert-mag {
+      padding: 1.2rem 0;
+      border-bottom: 1px solid var(--light);
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+    .concert-mag:first-child { border-top: 2px solid var(--red); }
+    .cm-date {
+      background: var(--red);
+      color: white;
+      text-align: center;
+      padding: 0.4rem;
+    }
+    .cm-date .day { font-family: 'Libre Baskerville', serif; font-size: 1.5rem; font-weight: 700; line-height: 1; }
+    .cm-date .month { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+    .cm-info .cm-name { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 0.95rem; color: var(--black); margin-bottom: 0.2rem; }
+    .cm-info .cm-lieu { font-size: 0.78rem; color: var(--gray); }
+    .cm-info .cm-tag { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--red); margin-top: 0.3rem; display: block; }
+    .sidebar-section { margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid var(--black); }
+    .ss-title { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver); margin-bottom: 1rem; font-weight: 700; }
+    .ss-stat { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--light); font-size: 0.85rem; }
+    .ss-stat .ss-k { color: var(--gray); }
+    .ss-stat .ss-v { font-weight: 700; color: var(--black); }
+
+    /* ── Sections génériques ── */
+    section { padding: 4rem 0; border-bottom: 1px solid var(--light); }
+    section:last-of-type { border-bottom: none; }
+    .section-header-mag {
+      display: flex;
+      align-items: baseline;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 3px solid var(--black);
+    }
+    .shm-title { font-family: 'Libre Baskerville', serif; font-size: 1.4rem; font-weight: 700; color: var(--black); }
+    .shm-line { flex: 1; height: 1px; background: var(--light); }
+
+    /* ── Histoire ── */
+    #histoire { background: var(--white); }
+    .histoire-mag { display: grid; grid-template-columns: 2fr 1fr; gap: 4rem; }
+    .hm-lead {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--dark);
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--light);
+    }
+    .hm-body { column-count: 2; column-gap: 2.5rem; font-size: 0.9rem; color: var(--mid); line-height: 1.8; }
+    .hm-body p { margin-bottom: 1rem; break-inside: avoid; }
+    .hm-body p:first-child::first-letter {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--red);
+      float: left;
+      line-height: 0.8;
+      margin: 0.1em 0.08em 0 0;
+    }
+    .pullquote-mag {
+      column-span: all;
+      margin: 1.5rem 0;
+      padding: 1.5rem 2rem;
+      border-top: 3px solid var(--red);
+      border-bottom: 1px solid var(--light);
+    }
+    .pullquote-mag p { font-family: 'Libre Baskerville', serif; font-size: 1.3rem; font-style: italic; color: var(--black); line-height: 1.5; margin-bottom: 0.5rem; }
+    .pullquote-mag cite { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red); font-weight: 700; font-style: normal; }
+    .sidebar-mag { }
+    .bureau-mag { }
+    .bm-title { font-family: 'Libre Baskerville', serif; font-size: 1rem; font-weight: 700; color: var(--black); margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--red); }
+    .bm-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0.55rem 0; border-bottom: 1px solid var(--light); font-size: 0.82rem; }
+    .bm-row:last-child { border-bottom: none; }
+    .bm-name { color: var(--dark); font-weight: 600; }
+    .bm-role { color: var(--silver); font-size: 0.72rem; }
+    .valeurs-mag { margin-top: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .vm-item { padding: 0.9rem; border: 1px solid var(--light); }
+    .vm-item h4 { font-family: 'Libre Baskerville', serif; font-size: 0.85rem; font-weight: 700; color: var(--black); margin-bottom: 0.3rem; }
+    .vm-item p { font-size: 0.76rem; color: var(--gray); }
+
+    /* ── Rejoindre ── */
+    #rejoindre { background: var(--off); }
+    .rejoindre-mag { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+    .instr-grid-mag { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--light); margin-bottom: 2rem; }
+    .ig-item { padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--light); border-right: 1px solid var(--light); font-size: 0.82rem; color: var(--dark); display: flex; align-items: center; gap: 0.5rem; }
+    .ig-item::before { content: '◆'; color: var(--red); font-size: 0.45rem; flex-shrink: 0; }
+    .ig-item:nth-child(2n) { border-right: none; }
+    .ig-item:last-child, .ig-item:nth-last-child(2):nth-child(2n+1) { border-bottom: none; }
+    .info-mag { margin-bottom: 2rem; }
+    .im-row { display: flex; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--light); }
+    .im-key { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red); width: 100px; flex-shrink: 0; margin-top: 0.1rem; }
+    .im-val { font-size: 0.85rem; color: var(--mid); }
+    .form-mag { background: white; border: 1px solid var(--light); padding: 2rem; border-top: 3px solid var(--red); }
+    .form-mag h3 { font-family: 'Libre Baskerville', serif; font-size: 1.2rem; font-weight: 700; color: var(--black); margin-bottom: 1.5rem; }
+    .fm-group { margin-bottom: 1rem; }
+    .fm-group label { display: block; font-size: 0.68rem; font-weight: 700; color: var(--silver); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.35rem; }
+    .fm-group input, .fm-group select, .fm-group textarea {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid var(--light);
+      background: var(--off);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.88rem;
+      color: var(--dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .fm-group input:focus, .fm-group select:focus, .fm-group textarea:focus { border-color: var(--red); }
+    .fm-group textarea { min-height: 85px; resize: vertical; }
+    .fm-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* ── Agenda ── */
+    #agenda { background: var(--white); }
+    .agenda-mag { display: grid; grid-template-columns: 2fr 1fr; gap: 4rem; }
+    .event-featured-mag {
+      background: var(--red);
+      color: white;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+    }
+    .efm-date { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; margin-bottom: 0.8rem; }
+    .efm-name { font-family: 'Libre Baskerville', serif; font-size: 2rem; font-weight: 700; margin-bottom: 0.8rem; line-height: 1.1; }
+    .efm-meta { font-size: 0.85rem; opacity: 0.8; display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 1.5rem; }
+    .events-list-mag { }
+    .elm-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 1.5rem;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid var(--light);
+      align-items: center;
+    }
+    .elm-date-box { text-align: center; background: var(--off); padding: 0.6rem; }
+    .elm-day { font-family: 'Libre Baskerville', serif; font-size: 1.6rem; font-weight: 700; color: var(--black); line-height: 1; }
+    .elm-month { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--red); }
+    .elm-name { font-family: 'Libre Baskerville', serif; font-weight: 700; color: var(--black); margin-bottom: 0.2rem; }
+    .elm-lieu { font-size: 0.8rem; color: var(--gray); }
+    .agenda-sidebar-mag { }
+    .past-list-mag { }
+    .plm-title { font-family: 'Libre Baskerville', serif; font-size: 0.95rem; font-weight: 700; color: var(--black); margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--black); }
+    .plm-row { padding: 0.55rem 0; border-bottom: 1px dotted var(--light); font-size: 0.82rem; }
+    .plm-row:last-child { border-bottom: none; }
+    .plm-name { color: var(--dark); }
+    .plm-date { color: var(--silver); font-size: 0.72rem; }
+
+    /* ── Galerie ── */
+    #galerie { background: var(--off); }
+    .gal-filter-mag { display: flex; gap: 0; margin-bottom: 2rem; border-bottom: 2px solid var(--black); }
+    .gfm-tab { padding: 0.5rem 1rem 0.7rem; border: none; background: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--silver); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+    .gfm-tab.active, .gfm-tab:hover { color: var(--red); border-bottom-color: var(--red); }
+    .gal-mag {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 160px;
+      gap: 4px;
+      margin-bottom: 2rem;
+    }
+    .gm-item { overflow: hidden; }
+    .gm-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .gm-ph { width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 0.7rem; }
+    .gm-item:nth-child(1) .gm-ph { background: linear-gradient(160deg, #111 0%, var(--red-dark) 100%); }
+    .gm-item:nth-child(2) .gm-ph { background: linear-gradient(135deg, #222 0%, #111 100%); }
+    .gm-item:nth-child(3) .gm-ph { background: linear-gradient(135deg, #1a0000 0%, #300000 100%); }
+    .gm-item:nth-child(4) .gm-ph { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); }
+    .gm-item:nth-child(5) .gm-ph { background: linear-gradient(135deg, #200000 0%, var(--red-dark) 100%); }
+    .gm-item:nth-child(6) .gm-ph { background: linear-gradient(135deg, #111 0%, #222 100%); }
+    .gm-label { font-size: 0.62rem; font-weight: 700; color: rgba(255,255,255,0.6); background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .media-mag { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--light); }
+    .mm-item { background: white; padding: 1.2rem 1.5rem; display: flex; gap: 1rem; }
+    .mm-icon { font-size: 1.5rem; color: var(--red); flex-shrink: 0; }
+    .mm-title { font-weight: 700; font-size: 0.85rem; color: var(--black); margin-bottom: 0.2rem; }
+    .mm-meta { font-size: 0.72rem; color: var(--silver); }
+
+    /* ── Contact ── */
+    #contact { background: var(--white); }
+    .contact-mag { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+    .cinfo-mag h3 { font-family: 'Libre Baskerville', serif; font-size: 1.2rem; font-weight: 700; color: var(--black); margin-bottom: 1.5rem; padding-bottom: 0.7rem; border-bottom: 2px solid var(--red); }
+    .cim-row { display: grid; grid-template-columns: 100px 1fr; gap: 1rem; padding: 0.7rem 0; border-bottom: 1px dotted var(--light); font-size: 0.85rem; }
+    .cim-row:last-of-type { border-bottom: none; }
+    .cim-key { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red); margin-top: 0.1rem; }
+    .cim-val { color: var(--mid); }
+    .cim-val a { color: var(--black); text-decoration: none; font-weight: 600; }
+    .cim-val a:hover { color: var(--red); }
+    .map-mag { height: 170px; background: var(--off); border: 1px solid var(--light); display: flex; align-items: center; justify-content: center; margin: 1.5rem 0; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--silver); }
+    .socials-mag { display: flex; gap: 0.5rem; }
+    .sm-link { padding: 0.4rem 0.9rem; border: 1px solid var(--light); font-size: 0.72rem; font-weight: 700; color: var(--gray); text-decoration: none; transition: all 0.2s; }
+    .sm-link:hover { background: var(--red); color: white; border-color: var(--red); }
+
+    /* ── Partenaires ── */
+    #partenaires { background: var(--off); }
+    .partners-mag { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--light); margin-bottom: 3rem; }
+    .pm-item { background: white; padding: 2rem 1.5rem; text-align: center; transition: background 0.2s; }
+    .pm-item:hover { background: var(--red-pale); }
+    .pm-icon { font-size: 2rem; display: block; margin-bottom: 0.8rem; }
+    .pm-name { font-family: 'Libre Baskerville', serif; font-size: 0.95rem; font-weight: 700; color: var(--black); margin-bottom: 0.25rem; }
+    .pm-type { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--silver); }
+    .don-mag { background: var(--black); padding: 3.5rem 4rem; display: grid; grid-template-columns: 1fr auto; gap: 4rem; align-items: center; }
+    .dm-text h3 { font-family: 'Libre Baskerville', serif; font-size: 2rem; font-weight: 700; color: white; margin-bottom: 0.6rem; line-height: 1.2; }
+    .dm-text h3 em { color: var(--red); font-style: italic; }
+    .dm-text p { font-size: 0.9rem; color: rgba(255,255,255,0.45); max-width: 500px; line-height: 1.7; }
+    .dm-actions { display: flex; flex-direction: column; gap: 0.7rem; flex-shrink: 0; }
+    .btn-outline-white-mag { display: inline-block; padding: 0.75rem 2rem; background: transparent; color: rgba(255,255,255,0.6); text-decoration: none; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s; }
+    .btn-outline-white-mag:hover { border-color: white; color: white; }
+
+    /* ── Footer ── */
+    footer { background: var(--black); padding: 3rem 2rem 2rem; }
+    .footer-mag { max-width: 1100px; margin: 0 auto; }
+    .footer-top-mag { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; padding-bottom: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 2rem; }
+    .ftm-brand .ftm-name { font-family: 'Libre Baskerville', serif; font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.3rem; }
+    .ftm-brand .ftm-sub { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.2); margin-bottom: 0.8rem; }
+    .ftm-brand .ftm-desc { font-size: 0.78rem; color: rgba(255,255,255,0.3); line-height: 1.65; }
+    .ftm-col h4 { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.25); margin-bottom: 0.8rem; font-weight: 700; }
+    .ftm-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .ftm-col a { font-size: 0.8rem; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
+    .ftm-col a:hover { color: var(--red); }
+    .footer-bottom-mag { display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; color: rgba(255,255,255,0.2); letter-spacing: 0.06em; }
+    .footer-bottom-mag a { color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.2s; }
+    .footer-bottom-mag a:hover { color: white; }
+    /* ── Responsive mobile (auto) ── */
+    html, body { overflow-x: hidden; }
+    img, video, iframe { max-width: 100%; }
+    .nav-toggle { display: none; }
+    @media (max-width: 900px) {
+      .hero-mag, .histoire-mag, .valeurs-mag, .rejoindre-mag, .instr-grid-mag, .fm-row, .agenda-mag, .media-mag, .contact-mag, .don-mag { grid-template-columns: minmax(0, 1fr) !important; gap: 2rem; }
+      .hero-mag > *, .histoire-mag > *, .valeurs-mag > *, .rejoindre-mag > *, .instr-grid-mag > *, .fm-row > *, .agenda-mag > *, .media-mag > *, .contact-mag > *, .don-mag > * { grid-column: auto !important; grid-row: auto !important; }
+      .gal-mag, .partners-mag, .footer-top-mag { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      .nav-ribbon { padding: 0 !important; }
+      .nav-date { display: none; }
+      .nav-ribbon ul { overflow-x: auto; white-space: nowrap; width: 100%; }
+      .nav-ribbon a { padding: 0 .8rem; }
+      .don-mag { padding: 2.5rem 1.25rem !important; gap: 1.5rem !important; }
+    }
+    @media (max-width: 600px) {
+      .hm-body { column-count: 1; }
+      .section-header-mag { flex-wrap: wrap; gap: .8rem; }
+      .partners-mag, .footer-top-mag { grid-template-columns: minmax(0, 1fr) !important; }
+      .partners-mag > *, .footer-top-mag > * { grid-column: auto !important; grid-row: auto !important; }
+      .container, .container-narrow { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+      h1 { font-size: clamp(2.2rem, 11vw, 3.2rem) !important; line-height: 1.1 !important; }
+      h2 { font-size: clamp(1.6rem, 8vw, 2.3rem) !important; }
+      section { scroll-margin-top: 70px; }
+      [class*="footer-bottom"] { flex-direction: column; gap: .5rem; text-align: center; }
+      [class*="gal-filter"], [class*="gal-tabs"], [class*="galerie-tabs"], .gal-nav-scene, .masthead, [class*="hero-actions"], .hero-stats { flex-wrap: wrap; gap: 1rem; }
+      [class*="agenda-featured"] { grid-template-columns: minmax(0, 1fr) !important; }
+      .hero-inner, .hero-content { min-width: 0; max-width: 100%; }
+      table { display: block; overflow-x: auto; }
+      input, select, textarea { font-size: 16px !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Masthead -->
+  <div class="masthead">
+    <div class="masthead-left">
+      Pas-de-Calais<br>Association loi 1901
+    </div>
+    <div class="masthead-center">
+      <div class="masthead-title">L'Harmonie de <em>Bucquoy</em></div>
+      <div class="masthead-sub">Musique · Tradition · Passion — Fondée en 1892</div>
+    </div>
+    <div class="masthead-right">
+      62116 Bucquoy<br>Depuis 134 ans
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-ribbon">
+      <div class="nav-date">Saison 2026</div>
+      <ul>
+        <li><a href="#histoire">Notre histoire</a></li>
+        <li><a href="#rejoindre">Rejoindre</a></li>
+        <li><a href="#agenda">Agenda</a></li>
+        <li><a href="#galerie">Galerie</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#partenaires">Partenaires</a></li>
+        <li><a href="#rejoindre" class="red">Nous rejoindre</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section id="accueil">
+    <div class="container">
+      <hr class="rule thick">
+      <div class="hero-mag">
+        <div class="hero-main">
+          <div class="hero-cat"><span class="cat-label">Association musicale</span></div>
+          <h1 class="hero-title">L'Harmonie<em>de Bucquoy</em></h1>
+          <p class="hero-deck">Depuis 1892, 45 musiciens passionnés au cœur du Pas-de-Calais — une histoire centenaire de musique partagée.</p>
+          <p class="hero-text">Fondée il y a plus de 130 ans, l'Harmonie de Bucquoy rassemble chaque semaine amateurs et passionnés autour d'un répertoire riche et varié. Cuivres, bois, percussions : une famille musicale ouverte à tous.</p>
+          <div class="hero-actions">
+            <a href="#rejoindre" class="btn-red">Rejoindre l'harmonie</a>
+            <a href="#agenda" class="btn-outline">Programme 2026</a>
+          </div>
+          <div class="hero-metrics">
+            <div class="hm-item"><div class="hm-num">45</div><div class="hm-label">Musiciens actifs</div></div>
+            <div class="hm-item"><div class="hm-num">134</div><div class="hm-label">Ans d'existence</div></div>
+            <div class="hm-item"><div class="hm-num">12+</div><div class="hm-label">Concerts / an</div></div>
+          </div>
+        </div>
+        <div class="hero-sidebar">
+          <div class="cat-label">Prochains concerts</div>
+          <div class="concerts-mag">
+            <div class="concert-mag">
+              <div class="cm-date"><div class="day">14</div><div class="month">Juin</div></div>
+              <div class="cm-info"><div class="cm-name">Concert de la Saint-Jean</div><div class="cm-lieu">Place de Bucquoy · 15h00</div><span class="cm-tag">Entrée libre</span></div>
+            </div>
+            <div class="concert-mag">
+              <div class="cm-date" style="background:var(--black);"><div class="day">22</div><div class="month">Août</div></div>
+              <div class="cm-info"><div class="cm-name">Festival des Harmonies du Nord</div><div class="cm-lieu">Arras · 18h00</div><span class="cm-tag">5 €</span></div>
+            </div>
+            <div class="concert-mag">
+              <div class="cm-date" style="background:var(--dark);"><div class="day">05</div><div class="month">Déc.</div></div>
+              <div class="cm-info"><div class="cm-name">Grand Concert de Noël</div><div class="cm-lieu">Église Saint-Pierre · 20h30</div><span class="cm-tag">Don libre</span></div>
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <div class="ss-title">En chiffres</div>
+            <div class="ss-stat"><span class="ss-k">Répétitions</span><span class="ss-v">Chaque mercredi</span></div>
+            <div class="ss-stat"><span class="ss-k">Horaires</span><span class="ss-v">20h00 – 22h00</span></div>
+            <div class="ss-stat"><span class="ss-k">Cotisation adulte</span><span class="ss-v">80 € / an</span></div>
+            <div class="ss-stat"><span class="ss-k">Cotisation jeune</span><span class="ss-v">50 € / an</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Histoire -->
+  <section id="histoire">
+    <div class="container">
+      <div class="section-header-mag">
+        <span class="cat-label">Rubrique</span>
+        <h2 class="shm-title">L'Harmonie &amp; notre histoire</h2>
+        <div class="shm-line"></div>
+      </div>
+      <div class="histoire-mag">
+        <div>
+          <p class="hm-lead">Fondée en 1892, l'Harmonie de Bucquoy incarne depuis plus d'un siècle l'idéal d'une musique accessible à tous, ancrée dans sa communauté et tournée vers l'excellence.</p>
+          <div class="hm-body">
+            <p>Fondée en <strong>1892</strong> par un groupe de passionnés du canton de Bucquoy, l'Harmonie de Bucquoy est l'une des plus anciennes sociétés musicales du Pas-de-Calais. Traversant deux guerres mondiales, les crises économiques et les transformations sociales, notre association a su préserver l'essentiel.</p>
+            <p>Au fil des décennies, l'harmonie est passée de 20 musiciens amateurs à un ensemble de <strong>45 instrumentistes</strong> de tous âges et niveaux. En 2005, la création d'une section jeunes ouvre l'harmonie aux enfants dès 8 ans.</p>
+            <div class="pullquote-mag">
+              <p>« La musique nous rassemble, nous élève, nous donne envie de partager ce que nous avons de meilleur. C'est ce que l'Harmonie de Bucquoy incarne depuis plus de 130 ans. »</p>
+              <cite>— Jean-Pierre Martin, Président</cite>
+            </div>
+            <p>Notre répertoire couvre aussi bien les grandes marches militaires que les musiques de films, les pièces symphoniques ou les musiques du monde. Chaque mercredi soir, les répétitions réunissent musiciens de tous horizons dans un esprit de convivialité et d'exigence partagée.</p>
+          </div>
+          <div class="valeurs-mag" style="margin-top:2rem;">
+            <div class="vm-item"><h4>Excellence musicale</h4><p>Répétitions hebdomadaires rigoureuses</p></div>
+            <div class="vm-item"><h4>Convivialité</h4><p>Esprit de famille ouvert à tous</p></div>
+            <div class="vm-item"><h4>Ancrage local</h4><p>Fière de représenter Bucquoy</p></div>
+            <div class="vm-item"><h4>Transmission</h4><p>Initiation musicale dès 8 ans</p></div>
+          </div>
+        </div>
+        <div class="sidebar-mag">
+          <div class="bureau-mag">
+            <div class="bm-title">Bureau &amp; Direction</div>
+            <div class="bm-row"><span class="bm-name">Jean-Pierre Martin</span><span class="bm-role">Président</span></div>
+            <div class="bm-row"><span class="bm-name">Sophie Delacroix</span><span class="bm-role">Vice-Présidente</span></div>
+            <div class="bm-row"><span class="bm-name">Mathieu Leroy</span><span class="bm-role">Secrétaire</span></div>
+            <div class="bm-row"><span class="bm-name">Isabelle Fontaine</span><span class="bm-role">Trésorière</span></div>
+            <div class="bm-row"><span class="bm-name">François Beaumont</span><span class="bm-role">Chef d'orchestre</span></div>
+            <div class="bm-row"><span class="bm-name">Laurent Dupuis</span><span class="bm-role">Chef pupitre Cuivres</span></div>
+            <div class="bm-row"><span class="bm-name">Marie Hébert</span><span class="bm-role">Chef pupitre Bois</span></div>
+            <div class="bm-row"><span class="bm-name">Antoine Noël</span><span class="bm-role">Chef pupitre Percussions</span></div>
+            <div class="bm-row"><span class="bm-name">Clara Bernard</span><span class="bm-role">Responsable jeunes</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rejoindre -->
+  <section id="rejoindre">
+    <div class="container">
+      <div class="section-header-mag">
+        <span class="cat-label">Adhésion</span>
+        <h2 class="shm-title">Rejoindre l'harmonie</h2>
+        <div class="shm-line"></div>
+      </div>
+      <div class="rejoindre-mag">
+        <div>
+          <p style="font-size:0.68rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--red);margin-bottom:0.8rem;">Instruments recherchés</p>
+          <div class="instr-grid-mag">
+            <div class="ig-item">Flûte traversière</div><div class="ig-item">Clarinette</div>
+            <div class="ig-item">Saxophone alto</div><div class="ig-item">Saxophone ténor</div>
+            <div class="ig-item">Trompette</div><div class="ig-item">Cor d'harmonie</div>
+            <div class="ig-item">Trombone</div><div class="ig-item">Euphonium</div>
+            <div class="ig-item" style="grid-column:span 2;border-bottom:none;">Percussions</div>
+          </div>
+          <div class="info-mag">
+            <div class="im-row"><span class="im-key">Répétitions</span><span class="im-val">Mercredi · 20h00 – 22h00<br>Salle polyvalente, Rue de la Mairie, 62116 Bucquoy</span></div>
+            <div class="im-row"><span class="im-key">Niveau requis</span><span class="im-val">Tous niveaux — audition informelle de bienvenue</span></div>
+            <div class="im-row"><span class="im-key">Cotisation</span><span class="im-val">Adultes : 80 € / an · Moins de 18 ans : 50 € / an</span></div>
+          </div>
+        </div>
+        <div class="form-mag">
+          <h3>Formulaire d'inscription</h3>
+          <form>
+            <div class="fm-row">
+              <div class="fm-group"><label>Prénom</label><input type="text" placeholder="Votre prénom"></div>
+              <div class="fm-group"><label>Nom</label><input type="text" placeholder="Votre nom"></div>
+            </div>
+            <div class="fm-group"><label>E-mail</label><input type="email" placeholder="votre@email.fr"></div>
+            <div class="fm-group"><label>Téléphone</label><input type="tel" placeholder="06 XX XX XX XX"></div>
+            <div class="fm-row">
+              <div class="fm-group"><label>Instrument</label><select><option>— Sélectionner —</option><option>Flûte traversière</option><option>Clarinette</option><option>Saxophone</option><option>Trompette</option><option>Cor d'harmonie</option><option>Trombone</option><option>Euphonium</option><option>Percussions</option><option>Autre</option></select></div>
+              <div class="fm-group"><label>Niveau</label><select><option>— Sélectionner —</option><option>Débutant</option><option>Intermédiaire</option><option>Avancé</option></select></div>
+            </div>
+            <div class="fm-group"><label>Message</label><textarea placeholder="Votre parcours musical…"></textarea></div>
+            <button type="submit" class="btn-red" style="width:100%;">Envoyer ma candidature</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agenda -->
+  <section id="agenda">
+    <div class="container">
+      <div class="section-header-mag">
+        <span class="cat-label">Saison 2026</span>
+        <h2 class="shm-title">Agenda &amp; concerts</h2>
+        <div class="shm-line"></div>
+      </div>
+      <div class="agenda-mag">
+        <div>
+          <div class="event-featured-mag">
+            <div class="efm-date">Dimanche 14 juin 2026 · 15h00</div>
+            <div class="efm-name">Concert de la Saint-Jean</div>
+            <div class="efm-meta"><span>📍 Place du Général de Gaulle, Bucquoy</span><span>🎵 Marches, variétés &amp; musiques de films</span><span>🍺 Buvette sur place</span></div>
+            <a href="#contact" class="btn-outline-white-mag">Plus d'informations</a>
+          </div>
+          <div class="events-list-mag">
+            <div class="elm-row">
+              <div class="elm-date-box"><div class="elm-day">22</div><div class="elm-month">Août</div></div>
+              <div><div class="elm-name">Festival des Harmonies du Nord</div><div class="elm-lieu">Place des Héros, Arras · 18h00 · 5 € / gratuit -12 ans</div></div>
+            </div>
+            <div class="elm-row">
+              <div class="elm-date-box"><div class="elm-day">05</div><div class="elm-month">Déc.</div></div>
+              <div><div class="elm-name">Grand Concert de Noël</div><div class="elm-lieu">Église Saint-Pierre, Bucquoy · 20h30 · Don libre</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="agenda-sidebar-mag">
+          <div class="past-list-mag">
+            <div class="plm-title">Concerts passés</div>
+            <div class="plm-row"><div class="plm-name">Concert du Souvenir — Arras</div><div class="plm-date">11 nov. 2025</div></div>
+            <div class="plm-row"><div class="plm-name">Kermesse de Bucquoy</div><div class="plm-date">7 sept. 2025</div></div>
+            <div class="plm-row"><div class="plm-name">Tournée des Hauts-de-France</div><div class="plm-date">Juin 2025</div></div>
+            <div class="plm-row"><div class="plm-name">Concert de Printemps</div><div class="plm-date">15 mars 2025</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Galerie -->
+  <section id="galerie">
+    <div class="container">
+      <div class="section-header-mag">
+        <span class="cat-label">Médias</span>
+        <h2 class="shm-title">Galerie</h2>
+        <div class="shm-line"></div>
+      </div>
+      <div class="gal-filter-mag">
+        <button class="gfm-tab active">Tout</button>
+        <button class="gfm-tab">Photos</button>
+        <button class="gfm-tab">Vidéos</button>
+        <button class="gfm-tab">Audio</button>
+        <button class="gfm-tab">Interviews</button>
+      </div>
+      <div class="gal-mag">
+        <div class="gm-item"><div class="gm-ph"><span class="gm-label">Concert Saint-Jean 2025</span></div></div>
+        <div class="gm-item"><div class="gm-ph"><span class="gm-label">Festival Arras</span></div></div>
+        <div class="gm-item"><div class="gm-ph"><span class="gm-label">Concert de Noël</span></div></div>
+        <div class="gm-item"><div class="gm-ph"><span class="gm-label">Répétition</span></div></div>
+        <div class="gm-item"><div class="gm-ph"><span class="gm-label">Kermesse 2025</span></div></div>
+        <div class="gm-item"><div class="gm-ph"><span class="gm-label">Concert Printemps</span></div></div>
+      </div>
+      <div class="media-mag">
+        <div class="mm-item"><span class="mm-icon">▶</span><div><div class="mm-title">Concert de Noël 2025 — Intégral</div><div class="mm-meta">Stream live · 1h24</div></div></div>
+        <div class="mm-item"><span class="mm-icon">♪</span><div><div class="mm-title">« La Victoire » — Marche officielle</div><div class="mm-meta">Studio 2024 · 3min 42</div></div></div>
+        <div class="mm-item"><span class="mm-icon">🎙</span><div><div class="mm-title">Interview — François Beaumont</div><div class="mm-meta">La Voix du Nord · Sept. 2025</div></div></div>
+        <div class="mm-item"><span class="mm-icon">♫</span><div><div class="mm-title">Concert Printemps 2025 — Audio</div><div class="mm-meta">Live enregistré · 58 min</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="container">
+      <div class="section-header-mag">
+        <span class="cat-label">Contact</span>
+        <h2 class="shm-title">Nous contacter</h2>
+        <div class="shm-line"></div>
+      </div>
+      <div class="contact-mag">
+        <div class="cinfo-mag">
+          <h3>Informations pratiques</h3>
+          <div class="cim-row"><span class="cim-key">Adresse</span><span class="cim-val">Salle polyvalente de Bucquoy<br>Rue de la Mairie, 62116 Bucquoy</span></div>
+          <div class="cim-row"><span class="cim-key">Répétitions</span><span class="cim-val">Mercredi · 20h00 – 22h00</span></div>
+          <div class="cim-row"><span class="cim-key">E-mail</span><span class="cim-val"><a href="mailto:harmonie.bucquoy@gmail.com">harmonie.bucquoy@gmail.com</a></span></div>
+          <div class="cim-row"><span class="cim-key">Téléphone</span><span class="cim-val"><a href="tel:+33612345678">06 12 34 56 78</a></span></div>
+          <div class="map-mag">[ Carte — Salle polyvalente de Bucquoy ]</div>
+          <div class="socials-mag">
+            <a href="#" class="sm-link">Facebook</a>
+            <a href="#" class="sm-link">YouTube</a>
+            <a href="#" class="sm-link">Instagram</a>
+          </div>
+        </div>
+        <div class="form-mag">
+          <h3>Envoyez-nous un message</h3>
+          <form>
+            <div class="fm-row">
+              <div class="fm-group"><label>Prénom</label><input type="text" placeholder="Prénom"></div>
+              <div class="fm-group"><label>Nom</label><input type="text" placeholder="Nom"></div>
+            </div>
+            <div class="fm-group"><label>E-mail</label><input type="email" placeholder="votre@email.fr"></div>
+            <div class="fm-group"><label>Sujet</label><select><option>Renseignements généraux</option><option>Adhésion</option><option>Concerts</option><option>Presse / Médias</option><option>Partenariat</option></select></div>
+            <div class="fm-group"><label>Message</label><textarea placeholder="Votre message…"></textarea></div>
+            <button type="submit" class="btn-red" style="width:100%;">Envoyer le message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partenaires -->
+  <section id="partenaires">
+    <div class="container">
+      <div class="section-header-mag">
+        <span class="cat-label">Partenaires</span>
+        <h2 class="shm-title">Soutiens &amp; partenaires</h2>
+        <div class="shm-line"></div>
+      </div>
+      <div class="partners-mag">
+        <div class="pm-item"><span class="pm-icon">🏛️</span><div class="pm-name">Commune de Bucquoy</div><div class="pm-type">Soutien institutionnel</div></div>
+        <div class="pm-item"><span class="pm-icon">🏛️</span><div class="pm-name">Conseil Départemental 62</div><div class="pm-type">Subvention culturelle</div></div>
+        <div class="pm-item"><span class="pm-icon">🎵</span><div class="pm-name">Fédération Musicale NPdC</div><div class="pm-type">Partenaire fédéral</div></div>
+        <div class="pm-item"><span class="pm-icon">🏦</span><div class="pm-name">Crédit Agricole Nord France</div><div class="pm-type">Sponsor principal</div></div>
+        <div class="pm-item"><span class="pm-icon">🥖</span><div class="pm-name">Boulangerie Leclercq</div><div class="pm-type">Sponsor local</div></div>
+        <div class="pm-item"><span class="pm-icon">🔧</span><div class="pm-name">SARL Moreau Plomberie</div><div class="pm-type">Mécène</div></div>
+      </div>
+      <div class="don-mag">
+        <div class="dm-text">
+          <h3>Soutenir <em>l'Harmonie</em></h3>
+          <p>Association loi 1901, nous dépendons de vos dons pour financer partitions, instruments et déplacements. Chaque contribution, quelle qu'elle soit, nous aide à continuer.</p>
+        </div>
+        <div class="dm-actions">
+          <a href="#contact" class="btn-red">Faire un don</a>
+          <a href="#contact" class="btn-outline-white-mag">Devenir partenaire</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-mag">
+      <div class="footer-top-mag">
+        <div class="ftm-brand">
+          <div class="ftm-name">L'Harmonie de Bucquoy</div>
+          <div class="ftm-sub">Association loi 1901 · Fondée en 1892</div>
+          <p class="ftm-desc">45 musiciens amateurs passionnés réunis chaque semaine au cœur du Pas-de-Calais depuis plus de 130 ans.</p>
+        </div>
+        <div class="ftm-col"><h4>Rubriques</h4><ul><li><a href="#histoire">Notre histoire</a></li><li><a href="#rejoindre">Rejoindre</a></li><li><a href="#agenda">Agenda</a></li><li><a href="#galerie">Galerie</a></li></ul></div>
+        <div class="ftm-col"><h4>Informations</h4><ul><li><a href="#contact">Contact</a></li><li><a href="#partenaires">Partenaires</a></li><li><a href="#">Mentions légales</a></li></ul></div>
+        <div class="ftm-col"><h4>Nous suivre</h4><ul><li><a href="#">Facebook</a></li><li><a href="#">YouTube</a></li><li><a href="#">Instagram</a></li></ul></div>
+      </div>
+      <div class="footer-bottom-mag">
+        <span>© 2026 L'Harmonie de Bucquoy — Association loi 1901 — 62116 Bucquoy</span>
+        <a href="#accueil">↑ Retour en haut</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

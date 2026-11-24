@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'Harmonie de Bucquoy — Style Moderne</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --coral: #FF6B35;
+      --coral-dark: #e55520;
+      --teal: #004E64;
+      --teal-light: #006880;
+      --dark: #111827;
+      --gray: #6b7280;
+      --light: #f9fafb;
+      --white: #ffffff;
+      --border: #e5e7eb;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      color: var(--dark);
+      background: var(--white);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: sticky;
+      top: 0;
+      background: var(--white);
+      border-bottom: 2px solid var(--border);
+      z-index: 1000;
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      text-decoration: none;
+    }
+    .nav-brand-icon {
+      width: 40px; height: 40px;
+      background: var(--coral);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 900;
+      font-family: 'Montserrat', sans-serif;
+      border-radius: 8px;
+    }
+    .nav-brand-text .name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--dark);
+    }
+    .nav-brand-text .tagline {
+      font-size: 0.7rem;
+      color: var(--gray);
+      display: block;
+    }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 0.2rem;
+    }
+    .nav-links a {
+      padding: 0.5rem 0.9rem;
+      color: var(--gray);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover { color: var(--coral); background: rgba(255,107,53,0.06); }
+    .nav-cta {
+      background: var(--coral) !important;
+      color: white !important;
+      border-radius: 6px !important;
+      padding: 0.5rem 1.2rem !important;
+    }
+    .nav-cta:hover { background: var(--coral-dark) !important; }
+
+    /* ── Utilitaires ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.8rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 999px;
+    }
+    .badge-coral { background: rgba(255,107,53,0.12); color: var(--coral); }
+    .badge-teal { background: rgba(0,78,100,0.1); color: var(--teal); }
+    .btn-primary {
+      display: inline-block;
+      padding: 0.85rem 2rem;
+      background: var(--coral);
+      color: white;
+      text-decoration: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 8px;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { background: var(--coral-dark); transform: translateY(-2px); }
+    .btn-secondary {
+      display: inline-block;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      color: var(--teal);
+      text-decoration: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 8px;
+      border: 2px solid var(--teal);
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: var(--teal); color: white; }
+
+    /* ── Hero ── */
+    #accueil {
+      background: var(--light);
+      padding: 7rem 2rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-shapes {
+      position: absolute;
+      top: 0; right: 0;
+      width: 45%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--coral) 0%, var(--coral-dark) 100%);
+      clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%);
+      z-index: 0;
+    }
+    .hero-shapes::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-numbers {
+      position: absolute;
+      top: 2rem; right: 5%;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12rem;
+      font-weight: 900;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+      z-index: 1;
+      user-select: none;
+    }
+    .hero-content-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .hero-left {}
+    .hero-badge { margin-bottom: 1.5rem; }
+    .hero-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--dark);
+      margin-bottom: 1.2rem;
+    }
+    .hero-title .accent { color: var(--coral); }
+    .hero-title .block {
+      display: block;
+      font-size: 0.55em;
+      font-weight: 600;
+      color: var(--teal);
+      letter-spacing: 0.02em;
+      margin-bottom: 0.2rem;
+    }
+    .hero-desc {
+      color: var(--gray);
+      font-size: 1.05rem;
+      max-width: 440px;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      padding-top: 2rem;
+      border-top: 2px solid var(--border);
+    }
+    .stat-item { }
+    .stat-number {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--coral);
+    }
+    .stat-label { font-size: 0.78rem; color: var(--gray); font-weight: 600; }
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .concert-preview {
+      background: white;
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+    .concert-preview:hover { transform: translateX(4px); }
+    .concert-preview-date {
+      background: var(--coral);
+      color: white;
+      border-radius: 8px;
+      padding: 0.5rem 0.8rem;
+      text-align: center;
+      flex-shrink: 0;
+      min-width: 56px;
+    }
+    .concert-preview-date .day {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .concert-preview-date .month {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .concert-preview-info .concert-name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--dark);
+    }
+    .concert-preview-info .concert-place {
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+    .concert-tag {
+      margin-left: auto;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--teal);
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+
+    /* ── Section générique ── */
+    section { padding: 5rem 0; }
+    .section-header { text-align: center; max-width: 600px; margin: 0 auto 3.5rem; }
+    .section-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 900;
+      color: var(--dark);
+      margin-top: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+    .section-title span { color: var(--coral); }
+    .section-desc { color: var(--gray); font-size: 1rem; }
+
+    /* ── Histoire ── */
+    #histoire { background: white; }
+    .histoire-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .timeline { position: relative; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 18px;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+    .timeline-item {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    .timeline-dot {
+      width: 38px; height: 38px;
+      background: var(--coral);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .timeline-dot.teal { background: var(--teal); }
+    .timeline-content { padding-top: 0.5rem; }
+    .timeline-content h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--dark);
+      margin-bottom: 0.3rem;
+    }
+    .timeline-content p { font-size: 0.88rem; color: var(--gray); }
+    .bureau-cards { display: flex; flex-direction: column; gap: 0.8rem; }
+    .bureau-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.8rem 1rem;
+      background: var(--light);
+      border-radius: 10px;
+      border-left: 3px solid var(--coral);
+    }
+    .bureau-avatar {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--coral), var(--coral-dark));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .bureau-card.alt .bureau-avatar { background: linear-gradient(135deg, var(--teal), var(--teal-light)); }
+    .bureau-info .bureau-name { font-weight: 600; font-size: 0.95rem; color: var(--dark); }
+    .bureau-info .bureau-role { font-size: 0.78rem; color: var(--gray); }
+    .valeurs-strip {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .valeur-box {
+      background: var(--light);
+      border-radius: 10px;
+      padding: 1.2rem;
+    }
+    .valeur-box .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .valeur-box h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-bottom: 0.3rem;
+      color: var(--dark);
+    }
+    .valeur-box p { font-size: 0.8rem; color: var(--gray); }
+    .president-quote {
+      background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+      border-radius: 12px;
+      padding: 1.8rem;
+      color: white;
+      margin-top: 1.5rem;
+    }
+    .president-quote p { font-style: italic; line-height: 1.7; margin-bottom: 0.8rem; }
+    .president-quote cite { font-size: 0.82rem; opacity: 0.8; font-style: normal; font-weight: 600; }
+
+    /* ── Rejoindre ── */
+    #rejoindre {
+      background: linear-gradient(180deg, var(--light) 0%, white 100%);
+    }
+    .rejoindre-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+    .instruments-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    .chip {
+      padding: 0.4rem 1rem;
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+    .chip:hover { border-color: var(--coral); color: var(--coral); }
+    .chip .chip-dot {
+      width: 8px; height: 8px;
+      background: var(--coral);
+      border-radius: 50%;
+    }
+    .info-cards { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
+    .info-card {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border-left: 4px solid var(--coral);
+    }
+    .info-card.teal-border { border-left-color: var(--teal); }
+    .info-card .ic { font-size: 1.4rem; flex-shrink: 0; }
+    .info-card h4 { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; color: var(--dark); }
+    .info-card p { font-size: 0.82rem; color: var(--gray); }
+    .form-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+    }
+    .form-card h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
+    .form-group label { font-size: 0.78rem; font-weight: 700; color: var(--dark); letter-spacing: 0.02em; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 0.7rem 0.9rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--coral);
+    }
+    .form-group textarea { min-height: 90px; resize: vertical; }
+    .form-submit {
+      width: 100%;
+      padding: 0.9rem;
+      background: var(--coral);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .form-submit:hover { background: var(--coral-dark); }
+
+    /* ── Agenda ── */
+    #agenda { background: var(--dark); color: white; }
+    #agenda .section-title { color: white; }
+    #agenda .section-desc { color: rgba(255,255,255,0.5); }
+    .agenda-featured {
+      background: linear-gradient(135deg, var(--coral) 0%, var(--coral-dark) 100%);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 2rem;
+      align-items: center;
+    }
+    .af-date {
+      text-align: center;
+    }
+    .af-date .big { font-family: 'Montserrat', sans-serif; font-size: 4rem; font-weight: 900; line-height: 1; }
+    .af-date .month { font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8; }
+    .af-info h3 { font-family: 'Montserrat', sans-serif; font-size: 1.6rem; font-weight: 900; margin-bottom: 0.5rem; }
+    .af-info .details { display: flex; flex-direction: column; gap: 0.2rem; opacity: 0.85; font-size: 0.9rem; }
+    .af-action { }
+    .btn-white {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      background: white;
+      color: var(--coral);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.82rem;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .events-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+      margin-bottom: 3rem;
+    }
+    .event-item {
+      background: rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: background 0.2s;
+    }
+    .event-item:hover { background: rgba(255,255,255,0.1); }
+    .event-item .e-date {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--coral);
+      margin-bottom: 0.5rem;
+    }
+    .event-item .e-name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .event-item .e-details { font-size: 0.82rem; opacity: 0.6; }
+    .past-concerts {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 2rem;
+    }
+    .past-concerts h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      opacity: 0.6;
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .past-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.88rem;
+    }
+    .past-row:last-child { border-bottom: none; }
+    .past-row .pr-name { opacity: 0.8; }
+    .past-row .pr-date { opacity: 0.4; font-size: 0.8rem; }
+
+    /* ── Galerie ── */
+    #galerie { background: white; }
+    .galerie-cats {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+    .cat-btn {
+      padding: 0.5rem 1.2rem;
+      border: 2px solid var(--border);
+      background: white;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--gray);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cat-btn.active, .cat-btn:hover { border-color: var(--coral); color: var(--coral); background: rgba(255,107,53,0.05); }
+    .masonry {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 160px;
+      gap: 1rem;
+    }
+    .masonry-item {
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    .masonry-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .masonry-item:nth-child(5) { grid-column: span 2; }
+    .masonry-ph {
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: flex-end;
+      padding: 1rem;
+    }
+    .masonry-item:nth-child(1) .masonry-ph { background: linear-gradient(135deg, var(--coral) 0%, var(--coral-dark) 100%); }
+    .masonry-item:nth-child(2) .masonry-ph { background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%); }
+    .masonry-item:nth-child(3) .masonry-ph { background: linear-gradient(135deg, #1f2937 0%, #374151 100%); }
+    .masonry-item:nth-child(4) .masonry-ph { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+    .masonry-item:nth-child(5) .masonry-ph { background: linear-gradient(135deg, var(--coral-dark) 0%, #9b1d0a 100%); }
+    .masonry-item:nth-child(6) .masonry-ph { background: linear-gradient(135deg, var(--teal-light) 0%, #00aec7 100%); }
+    .masonry-label {
+      color: rgba(255,255,255,0.9);
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: rgba(0,0,0,0.3);
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+    }
+    .media-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .media-card {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      transition: border-color 0.2s;
+    }
+    .media-card:hover { border-color: var(--coral); }
+    .media-icon {
+      width: 42px; height: 42px;
+      background: rgba(255,107,53,0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .media-info .media-title { font-weight: 600; font-size: 0.88rem; color: var(--dark); margin-bottom: 0.2rem; }
+    .media-info .media-meta { font-size: 0.75rem; color: var(--gray); }
+
+    /* ── Contact ── */
+    #contact { background: var(--light); }
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 4rem;
+    }
+    .contact-block { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .contact-block h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+    }
+    .contact-row {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+      align-items: flex-start;
+    }
+    .c-icon {
+      width: 36px; height: 36px;
+      background: rgba(255,107,53,0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .c-icon.teal { background: rgba(0,78,100,0.1); }
+    .c-text strong { display: block; font-size: 0.78rem; font-weight: 700; color: var(--dark); margin-bottom: 0.1rem; }
+    .c-text span, .c-text a { font-size: 0.88rem; color: var(--gray); text-decoration: none; }
+    .c-text a:hover { color: var(--coral); }
+    .map-box {
+      margin-top: 1.5rem;
+      height: 180px;
+      background: linear-gradient(135deg, var(--teal), var(--teal-light));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .socials { display: flex; gap: 0.8rem; margin-top: 1.5rem; }
+    .social-btn {
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--gray);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .social-btn:hover { border-color: var(--coral); color: var(--coral); }
+    .contact-form-block .form-group label { font-size: 0.78rem; font-weight: 700; color: var(--dark); display: block; margin-bottom: 0.3rem; }
+
+    /* ── Partenaires ── */
+    #partenaires { background: white; }
+    .partners-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+    }
+    .partner-card {
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 1.8rem 1.5rem;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .partner-card:hover { border-color: var(--coral); transform: translateY(-4px); box-shadow: 0 8px 30px rgba(255,107,53,0.1); }
+    .partner-logo-box {
+      width: 64px; height: 64px;
+      background: var(--light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 1rem;
+    }
+    .partner-name { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; color: var(--dark); }
+    .partner-type { font-size: 0.75rem; color: var(--gray); }
+    .support-banner {
+      background: linear-gradient(135deg, var(--coral) 0%, var(--coral-dark) 50%, var(--teal) 100%);
+      border-radius: 20px;
+      padding: 3.5rem 3rem;
+      text-align: center;
+      color: white;
+    }
+    .support-banner h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 0.8rem;
+    }
+    .support-banner p { opacity: 0.85; max-width: 500px; margin: 0 auto 2rem; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.4);
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    footer .f-brand { color: white; font-family: 'Montserrat', sans-serif; font-weight: 700; }
+    footer a { color: var(--coral); text-decoration: none; }
+    /* ── Responsive mobile (auto) ── */
+    html, body { overflow-x: hidden; }
+    img, video, iframe { max-width: 100%; }
+    .nav-toggle { display: none; }
+    @media (max-width: 900px) {
+      .hero-content-wrapper, .histoire-layout, .valeurs-strip, .rejoindre-layout, .form-row, .contact-layout { grid-template-columns: minmax(0, 1fr) !important; gap: 2rem; }
+      .hero-content-wrapper > *, .histoire-layout > *, .valeurs-strip > *, .rejoindre-layout > *, .form-row > *, .contact-layout > * { grid-column: auto !important; grid-row: auto !important; }
+      .events-list, .masonry, .media-row, .partners-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      .nav-inner { position: relative; padding: 0 1rem !important; }
+      .nav-toggle { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: none; border: 0; font-size: 1.6rem; line-height: 1; cursor: pointer; color: var(--gray); }
+      .nav-links { display: none !important; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; gap: 0 !important; padding: .5rem 1rem 1rem; background: var(--white); box-shadow: 0 10px 20px rgba(0,0,0,.15); max-height: calc(100vh - 80px); overflow-y: auto; }
+      nav.nav-open .nav-links { display: flex !important; }
+      .nav-links a { display: block; padding: .8rem .5rem !important; font-size: .95rem !important; }
+    }
+    @media (max-width: 600px) {
+      .events-list, .partners-grid { grid-template-columns: minmax(0, 1fr) !important; }
+      .events-list > *, .partners-grid > * { grid-column: auto !important; grid-row: auto !important; }
+      .container, .container-narrow { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+      h1 { font-size: clamp(2.2rem, 11vw, 3.2rem) !important; line-height: 1.1 !important; }
+      h2 { font-size: clamp(1.6rem, 8vw, 2.3rem) !important; }
+      section { scroll-margin-top: 70px; }
+      [class*="footer-bottom"] { flex-direction: column; gap: .5rem; text-align: center; }
+      [class*="gal-filter"], [class*="gal-tabs"], [class*="galerie-tabs"], .gal-nav-scene, .masthead, [class*="hero-actions"], .hero-stats { flex-wrap: wrap; gap: 1rem; }
+      [class*="agenda-featured"] { grid-template-columns: minmax(0, 1fr) !important; }
+      .hero-inner, .hero-content { min-width: 0; max-width: 100%; }
+      table { display: block; overflow-x: auto; }
+      input, select, textarea { font-size: 16px !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#accueil" class="nav-brand">
+        <div class="nav-brand-icon">H</div>
+        <div class="nav-brand-text">
+          <span class="name">L'Harmonie de Bucquoy</span>
+          <span class="tagline">Association musicale — Pas-de-Calais</span>
+        </div>
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" onclick="var n=this.closest('nav'),o=n.classList.toggle('nav-open');this.setAttribute('aria-expanded',o);this.textContent=o?'✕':'☰'">☰</button>
+      <ul class="nav-links" onclick="if(event.target.closest('a')){var n=this.closest('nav');n.classList.remove('nav-open');var b=n.querySelector('.nav-toggle');b.setAttribute('aria-expanded',false);b.textContent='☰'}">
+        <li><a href="#histoire">Histoire</a></li>
+        <li><a href="#rejoindre">Rejoindre</a></li>
+        <li><a href="#agenda">Agenda</a></li>
+        <li><a href="#galerie">Galerie</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#partenaires">Partenaires</a></li>
+        <li><a href="#rejoindre" class="nav-cta">Nous rejoindre</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero / Accueil -->
+  <section id="accueil">
+    <div class="hero-shapes">
+      <div class="hero-numbers">♩</div>
+    </div>
+    <div class="hero-content-wrapper">
+      <div class="hero-left">
+        <div class="hero-badge">
+          <span class="badge badge-coral">Fondée en 1892</span>
+        </div>
+        <h1 class="hero-title">
+          <span class="block">L'harmonie de</span>
+          Bucquoy
+          <span class="accent">.</span>
+        </h1>
+        <p class="hero-desc">
+          45 musiciens passionnés, plus de 130 ans d'histoire musicale au cœur du Pas-de-Calais.
+          Rejoignez une aventure humaine et musicale hors du commun.
+        </p>
+        <div class="hero-actions">
+          <a href="#rejoindre" class="btn-primary">Rejoindre l'harmonie</a>
+          <a href="#agenda" class="btn-secondary">Voir les concerts</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-number">45</div>
+            <div class="stat-label">Musiciens actifs</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">130+</div>
+            <div class="stat-label">Ans d'existence</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">12+</div>
+            <div class="stat-label">Concerts par an</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="concert-preview">
+          <div class="concert-preview-date">
+            <div class="day">14</div>
+            <div class="month">Juin</div>
+          </div>
+          <div class="concert-preview-info">
+            <div class="concert-name">Concert de la Saint-Jean</div>
+            <div class="concert-place">Place de Bucquoy — 15h00</div>
+          </div>
+          <span class="concert-tag">Libre</span>
+        </div>
+        <div class="concert-preview">
+          <div class="concert-preview-date">
+            <div class="day">22</div>
+            <div class="month">Août</div>
+          </div>
+          <div class="concert-preview-info">
+            <div class="concert-name">Festival des Harmonies du Nord</div>
+            <div class="concert-place">Arras — 18h00</div>
+          </div>
+          <span class="concert-tag">5 €</span>
+        </div>
+        <div class="concert-preview">
+          <div class="concert-preview-date" style="background: var(--teal);">
+            <div class="day">05</div>
+            <div class="month">Déc.</div>
+          </div>
+          <div class="concert-preview-info">
+            <div class="concert-name">Grand Concert de Noël</div>
+            <div class="concert-place">Église Saint-Pierre, Bucquoy — 20h30</div>
+          </div>
+          <span class="concert-tag" style="color: var(--teal);">Don libre</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Histoire -->
+  <section id="histoire">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-coral">Depuis 1892</span>
+        <h2 class="section-title">Notre <span>histoire</span></h2>
+        <p class="section-desc">Plus d'un siècle de passion musicale, de transmission et de vie associative au cœur du Pas-de-Calais.</p>
+      </div>
+      <div class="histoire-layout">
+        <div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot">1892</div>
+              <div class="timeline-content">
+                <h4>Fondation</h4>
+                <p>Un groupe de passionnés fonde l'Harmonie de Bucquoy avec 20 instrumentistes bénévoles.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot teal">1918</div>
+              <div class="timeline-content">
+                <h4>Reconstruction après-guerre</h4>
+                <p>L'harmonie renaît après la Grande Guerre, symbole de résilience et de renouveau culturel.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot">1965</div>
+              <div class="timeline-content">
+                <h4>Modernisation du répertoire</h4>
+                <p>Intégration de nouveaux genres musicaux : variétés, jazz, musiques de films.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot teal">2005</div>
+              <div class="timeline-content">
+                <h4>Section jeunes créée</h4>
+                <p>Lancement d'un programme d'initiation musicale pour les enfants dès 8 ans.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot">2026</div>
+              <div class="timeline-content">
+                <h4>Aujourd'hui — 45 musiciens</h4>
+                <p>Une harmonie moderne, ouverte à tous, fière de son héritage et tournée vers l'avenir.</p>
+              </div>
+            </div>
+          </div>
+          <div class="president-quote">
+            <p>« La musique nous rassemble, nous élève, nous donne envie de partager ce que nous avons de meilleur. L'Harmonie de Bucquoy, c'est avant tout une famille. »</p>
+            <cite>— Jean-Pierre Martin, Président</cite>
+          </div>
+        </div>
+        <div>
+          <div style="margin-bottom: 2rem;">
+            <span class="badge badge-teal" style="margin-bottom: 1rem; display: inline-block;">Bureau &amp; Direction</span>
+            <div class="bureau-cards">
+              <div class="bureau-card"><div class="bureau-avatar">JM</div><div class="bureau-info"><div class="bureau-name">Jean-Pierre Martin</div><div class="bureau-role">Président</div></div></div>
+              <div class="bureau-card alt"><div class="bureau-avatar">SD</div><div class="bureau-info"><div class="bureau-name">Sophie Delacroix</div><div class="bureau-role">Vice-Présidente</div></div></div>
+              <div class="bureau-card"><div class="bureau-avatar">ML</div><div class="bureau-info"><div class="bureau-name">Mathieu Leroy</div><div class="bureau-role">Secrétaire</div></div></div>
+              <div class="bureau-card alt"><div class="bureau-avatar">IF</div><div class="bureau-info"><div class="bureau-name">Isabelle Fontaine</div><div class="bureau-role">Trésorière</div></div></div>
+              <div class="bureau-card"><div class="bureau-avatar">FB</div><div class="bureau-info"><div class="bureau-name">François Beaumont</div><div class="bureau-role">Chef d'orchestre</div></div></div>
+            </div>
+          </div>
+          <div class="valeurs-strip">
+            <div class="valeur-box"><div class="icon">🎵</div><h4>Excellence</h4><p>Répétitions rigoureuses, répertoire varié et ambitieux</p></div>
+            <div class="valeur-box"><div class="icon">🤝</div><h4>Convivialité</h4><p>Un esprit d'équipe chaleureux, ouvert à tous</p></div>
+            <div class="valeur-box"><div class="icon">🏡</div><h4>Ancrage local</h4><p>Fière de représenter Bucquoy et ses environs</p></div>
+            <div class="valeur-box"><div class="icon">🌱</div><h4>Transmission</h4><p>Initiation musicale pour les jeunes dès 8 ans</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rejoindre -->
+  <section id="rejoindre">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-coral">Recrutement ouvert</span>
+        <h2 class="section-title">Rejoindre <span>l'harmonie</span></h2>
+        <p class="section-desc">Tous niveaux bienvenus. Si vous jouez d'un instrument à vent ou de percussion, votre place est parmi nous.</p>
+      </div>
+      <div class="rejoindre-layout">
+        <div>
+          <p style="font-weight:600; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--gray); margin-bottom:1rem;">Instruments recherchés</p>
+          <div class="instruments-chips">
+            <div class="chip"><span class="chip-dot"></span>Flûte traversière</div>
+            <div class="chip"><span class="chip-dot"></span>Clarinette</div>
+            <div class="chip"><span class="chip-dot"></span>Saxophone alto</div>
+            <div class="chip"><span class="chip-dot"></span>Saxophone ténor</div>
+            <div class="chip"><span class="chip-dot"></span>Trompette</div>
+            <div class="chip"><span class="chip-dot"></span>Cor d'harmonie</div>
+            <div class="chip"><span class="chip-dot"></span>Trombone</div>
+            <div class="chip"><span class="chip-dot"></span>Euphonium</div>
+            <div class="chip"><span class="chip-dot"></span>Percussions</div>
+          </div>
+          <div class="info-cards">
+            <div class="info-card">
+              <span class="ic">📅</span>
+              <div>
+                <h4>Répétitions</h4>
+                <p>Chaque mercredi soir · 20h00 – 22h00<br>Salle polyvalente, Rue de la Mairie, 62116 Bucquoy</p>
+              </div>
+            </div>
+            <div class="info-card teal-border">
+              <span class="ic">🎓</span>
+              <div>
+                <h4>Niveau requis</h4>
+                <p>Tous niveaux acceptés. Débutants bienvenus sur certains instruments. Audition de bienvenue informelle.</p>
+              </div>
+            </div>
+            <div class="info-card">
+              <span class="ic">💳</span>
+              <div>
+                <h4>Cotisation annuelle</h4>
+                <p>Adultes : 80 € · Moins de 18 ans : 50 €<br>Partitions, assurance &amp; sorties incluses</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-card">
+          <h3>Formulaire d'inscription</h3>
+          <form>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Prénom</label>
+                <input type="text" placeholder="Votre prénom">
+              </div>
+              <div class="form-group">
+                <label>Nom</label>
+                <input type="text" placeholder="Votre nom">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" placeholder="email@exemple.fr">
+              </div>
+              <div class="form-group">
+                <label>Téléphone</label>
+                <input type="tel" placeholder="06 XX XX XX XX">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Instrument</label>
+                <select>
+                  <option>— Choisir —</option>
+                  <option>Flûte traversière</option>
+                  <option>Clarinette</option>
+                  <option>Saxophone</option>
+                  <option>Trompette</option>
+                  <option>Cor d'harmonie</option>
+                  <option>Trombone</option>
+                  <option>Euphonium / Baryton</option>
+                  <option>Percussions</option>
+                  <option>Autre</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Niveau</label>
+                <select>
+                  <option>— Choisir —</option>
+                  <option>Débutant</option>
+                  <option>Intermédiaire</option>
+                  <option>Avancé</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Message (facultatif)</label>
+              <textarea placeholder="Parlez-nous de votre parcours musical…"></textarea>
+            </div>
+            <button type="submit" class="form-submit">Envoyer ma candidature →</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agenda -->
+  <section id="agenda">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge" style="background:rgba(255,107,53,0.15); color:var(--coral);">Saison 2026</span>
+        <h2 class="section-title" style="color:white;">Agenda <span>&amp; Concerts</span></h2>
+        <p class="section-desc" style="color:rgba(255,255,255,0.5);">Retrouvez-nous lors de nos prochaines manifestations musicales.</p>
+      </div>
+      <div class="agenda-featured">
+        <div class="af-date">
+          <div class="big">14</div>
+          <div class="month">Juin</div>
+        </div>
+        <div class="af-info">
+          <h3>Concert de la Saint-Jean ⭐</h3>
+          <div class="details">
+            <span>📍 Place du Général de Gaulle, Bucquoy</span>
+            <span>🕒 15h00 — Entrée libre</span>
+            <span>🎵 Programme : marches, variétés, musiques de films</span>
+          </div>
+        </div>
+        <div class="af-action">
+          <a href="#contact" class="btn-white">Plus d'infos</a>
+        </div>
+      </div>
+      <div class="events-list">
+        <div class="event-item">
+          <div class="e-date">22 août 2026 · 18h00</div>
+          <div class="e-name">Festival des Harmonies du Nord</div>
+          <div class="e-details">Place des Héros, Arras<br>Tarif : 5 € / gratuit -12 ans</div>
+        </div>
+        <div class="event-item">
+          <div class="e-date">5 décembre 2026 · 20h30</div>
+          <div class="e-name">Grand Concert de Noël</div>
+          <div class="e-details">Église Saint-Pierre, Bucquoy<br>Don libre à l'entrée</div>
+        </div>
+        <div class="event-item">
+          <div class="e-date">À confirmer · Printemps 2027</div>
+          <div class="e-name">Concert de Printemps</div>
+          <div class="e-details">Salle des fêtes de Bucquoy<br>Informations à venir</div>
+        </div>
+      </div>
+      <div class="past-concerts">
+        <h3>Concerts passés</h3>
+        <div class="past-row"><span class="pr-name">Concert du Souvenir — Arras</span><span class="pr-date">11 nov. 2025</span></div>
+        <div class="past-row"><span class="pr-name">Kermesse de Bucquoy</span><span class="pr-date">7 sept. 2025</span></div>
+        <div class="past-row"><span class="pr-name">Tournée des Hauts-de-France</span><span class="pr-date">Juin 2025</span></div>
+        <div class="past-row"><span class="pr-name">Concert de Printemps</span><span class="pr-date">15 mars 2025</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Galerie -->
+  <section id="galerie">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-coral">Souvenirs</span>
+        <h2 class="section-title">Notre <span>galerie</span></h2>
+        <p class="section-desc">Photos, vidéos, enregistrements — revivez nos plus beaux moments.</p>
+      </div>
+      <div class="galerie-cats">
+        <button class="cat-btn active">Tout</button>
+        <button class="cat-btn">Photos</button>
+        <button class="cat-btn">Vidéos</button>
+        <button class="cat-btn">Audio</button>
+        <button class="cat-btn">Interviews</button>
+      </div>
+      <div class="masonry">
+        <div class="masonry-item"><div class="masonry-ph"><span class="masonry-label">Concert Saint-Jean 2025</span></div></div>
+        <div class="masonry-item"><div class="masonry-ph"><span class="masonry-label">Festival Arras</span></div></div>
+        <div class="masonry-item"><div class="masonry-ph"><span class="masonry-label">Concert de Noël</span></div></div>
+        <div class="masonry-item"><div class="masonry-ph"><span class="masonry-label">Répétition</span></div></div>
+        <div class="masonry-item"><div class="masonry-ph"><span class="masonry-label">Kermesse 2025</span></div></div>
+        <div class="masonry-item"><div class="masonry-ph"><span class="masonry-label">Concert Printemps</span></div></div>
+      </div>
+      <div class="media-row">
+        <div class="media-card">
+          <div class="media-icon">▶️</div>
+          <div class="media-info">
+            <div class="media-title">Concert de Noël 2025 — Intégral</div>
+            <div class="media-meta">Diffusion live · 1h24</div>
+          </div>
+        </div>
+        <div class="media-card">
+          <div class="media-icon">🎵</div>
+          <div class="media-info">
+            <div class="media-title">«&nbsp;La Victoire&nbsp;» — Marche</div>
+            <div class="media-meta">Enregistrement studio 2024 · 3min</div>
+          </div>
+        </div>
+        <div class="media-card">
+          <div class="media-icon">🎙️</div>
+          <div class="media-info">
+            <div class="media-title">Interview — François Beaumont</div>
+            <div class="media-meta">La Voix du Nord · Sept. 2025</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-teal">Nous contacter</span>
+        <h2 class="section-title">Contact</h2>
+        <p class="section-desc">Une question, une demande d'adhésion ou de partenariat ? Écrivez-nous !</p>
+      </div>
+      <div class="contact-layout">
+        <div>
+          <div class="contact-block">
+            <h3>Informations pratiques</h3>
+            <div class="contact-row">
+              <div class="c-icon">📍</div>
+              <div class="c-text">
+                <strong>Lieu de répétition</strong>
+                <span>Salle polyvalente de Bucquoy<br>Rue de la Mairie, 62116 Bucquoy</span>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="c-icon">📅</div>
+              <div class="c-text">
+                <strong>Répétitions</strong>
+                <span>Mercredi · 20h00 – 22h00</span>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="c-icon teal">✉️</div>
+              <div class="c-text">
+                <strong>E-mail</strong>
+                <a href="mailto:harmonie.bucquoy@gmail.com">harmonie.bucquoy@gmail.com</a>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="c-icon teal">📞</div>
+              <div class="c-text">
+                <strong>Téléphone</strong>
+                <a href="tel:+33612345678">06 12 34 56 78</a>
+              </div>
+            </div>
+            <div class="map-box">[ Carte — Salle polyvalente de Bucquoy ]</div>
+            <div class="socials">
+              <a href="#" class="social-btn">Facebook</a>
+              <a href="#" class="social-btn">YouTube</a>
+              <a href="#" class="social-btn">Instagram</a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-block">
+          <h3>Envoyez-nous un message</h3>
+          <form>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Prénom</label>
+                <input type="text" placeholder="Votre prénom">
+              </div>
+              <div class="form-group">
+                <label>Nom</label>
+                <input type="text" placeholder="Votre nom">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>E-mail</label>
+              <input type="email" placeholder="votre@email.fr">
+            </div>
+            <div class="form-group">
+              <label>Sujet</label>
+              <select>
+                <option>Renseignements généraux</option>
+                <option>Adhésion</option>
+                <option>Billetterie / Concerts</option>
+                <option>Presse / Médias</option>
+                <option>Partenariat</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Message</label>
+              <textarea placeholder="Votre message…"></textarea>
+            </div>
+            <button type="submit" class="form-submit">Envoyer →</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partenaires -->
+  <section id="partenaires">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-teal">Merci à eux</span>
+        <h2 class="section-title">Partenaires <span>&amp; Soutiens</span></h2>
+        <p class="section-desc">Grâce à ces acteurs locaux et institutionnels, l'Harmonie de Bucquoy peut vivre sa passion.</p>
+      </div>
+      <div class="partners-grid">
+        <div class="partner-card"><div class="partner-logo-box">🏛️</div><div class="partner-name">Commune de Bucquoy</div><div class="partner-type">Soutien institutionnel</div></div>
+        <div class="partner-card"><div class="partner-logo-box">🏛️</div><div class="partner-name">Conseil Départemental 62</div><div class="partner-type">Subvention culturelle</div></div>
+        <div class="partner-card"><div class="partner-logo-box">🎵</div><div class="partner-name">Fédération Musicale NPdC</div><div class="partner-type">Partenaire fédéral</div></div>
+        <div class="partner-card"><div class="partner-logo-box">🏦</div><div class="partner-name">Crédit Agricole Nord France</div><div class="partner-type">Sponsor principal</div></div>
+        <div class="partner-card"><div class="partner-logo-box">🥖</div><div class="partner-name">Boulangerie Leclercq</div><div class="partner-type">Sponsor local</div></div>
+        <div class="partner-card"><div class="partner-logo-box">🔧</div><div class="partner-name">SARL Moreau Plomberie</div><div class="partner-type">Mécène</div></div>
+      </div>
+      <div class="support-banner">
+        <h3>Soutenir l'Harmonie</h3>
+        <p>En tant qu'association loi 1901, nous dépendons de vos dons et de la générosité de nos partenaires. Chaque soutien contribue à financer partitions, instruments et déplacements.</p>
+        <a href="#contact" class="btn-primary" style="background:white; color:var(--coral);">Nous soutenir</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span>© 2026 <span class="f-brand">L'Harmonie de Bucquoy</span> — Association loi 1901</span>
+    <a href="#accueil">↑ Retour en haut</a>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — L'Harmonie de Bucquoy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --terra: #c1440e; --terra-light: #e05520; --terra-pale: #f9ece4;
+      --olive: #5c7a29; --olive-light: #7a9e35; --olive-pale: #eef4e4;
+      --cream: #fdf6ec; --beige: #f0e6d3; --brown: #4a2c0a;
+      --text: #2d1f0a; --gray: #7a6a58; --white: #ffffff;
+      --danger: #d32f2f; --danger-pale: #fde8e8;
+      --sidebar-w: 260px;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Nunito',sans-serif; background:var(--beige); color:var(--text); font-size:15px; }
+
+    /* ── Login ── */
+    #login-screen {
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      background:var(--brown); position:fixed; inset:0; z-index:9999;
+    }
+    .login-box { background:white; border-radius:24px; padding:2.5rem; width:380px; box-shadow:0 20px 60px rgba(0,0,0,.3); }
+    .login-logo { text-align:center; margin-bottom:2rem; }
+    .login-logo .icon { width:64px; height:64px; background:var(--terra); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 1rem; }
+    .login-logo h1 { font-family:'Quicksand',sans-serif; font-size:1.2rem; font-weight:700; color:var(--brown); }
+    .login-logo p { font-size:.8rem; color:var(--gray); }
+    .login-field { margin-bottom:1rem; }
+    .login-field label { display:block; font-weight:700; font-size:.8rem; color:var(--brown); margin-bottom:.4rem; }
+    .login-field input { width:100%; padding:.75rem 1rem; border:2px solid var(--beige); border-radius:12px; font-family:'Nunito',sans-serif; font-size:.9rem; outline:none; transition:border-color .2s; }
+    .login-field input:focus { border-color:var(--terra); }
+    .login-btn { width:100%; padding:.9rem; background:var(--terra); color:white; border:none; border-radius:30px; font-family:'Nunito',sans-serif; font-weight:800; font-size:1rem; cursor:pointer; margin-top:.5rem; transition:background .2s; }
+    .login-btn:hover { background:var(--terra-light); }
+    .login-error { color:var(--danger); font-size:.82rem; text-align:center; margin-top:.5rem; display:none; }
+    .login-hint { font-size:.75rem; color:var(--gray); text-align:center; margin-top:1rem; }
+
+    /* ── Layout ── */
+    #admin-app { display:none; min-height:100vh; }
+    .sidebar { position:fixed; left:0; top:0; bottom:0; width:var(--sidebar-w); background:var(--brown); overflow-y:auto; z-index:100; display:flex; flex-direction:column; }
+    .sb-header { padding:1.5rem; border-bottom:1px solid rgba(255,255,255,.1); }
+    .sb-logo { display:flex; align-items:center; gap:.7rem; }
+    .sb-logo .icon { width:40px; height:40px; background:var(--terra); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
+    .sb-logo .name { font-family:'Quicksand',sans-serif; font-weight:700; color:var(--cream); font-size:.9rem; line-height:1.3; }
+    .sb-logo .badge { display:block; font-size:.65rem; color:var(--terra); background:rgba(193,68,14,.2); padding:.1rem .5rem; border-radius:999px; font-weight:800; margin-top:.2rem; width:fit-content; }
+    .sb-nav { padding:1rem 0; flex:1; }
+    .sb-section-label { padding:.5rem 1.2rem; font-size:.65rem; font-weight:800; color:rgba(253,246,236,.35); text-transform:uppercase; letter-spacing:.1em; }
+    .sb-item { display:flex; align-items:center; gap:.7rem; padding:.65rem 1.2rem; color:rgba(253,246,236,.65); text-decoration:none; font-size:.88rem; font-weight:700; cursor:pointer; transition:all .15s; border-left:3px solid transparent; }
+    .sb-item:hover { color:var(--cream); background:rgba(255,255,255,.05); }
+    .sb-item.active { color:var(--cream); background:rgba(193,68,14,.2); border-left-color:var(--terra); }
+    .sb-item .si { font-size:1.1rem; width:22px; text-align:center; }
+    .sb-badge { margin-left:auto; background:var(--terra); color:white; font-size:.65rem; font-weight:800; padding:.1rem .5rem; border-radius:999px; }
+    .sb-footer { padding:1rem 1.2rem; border-top:1px solid rgba(255,255,255,.1); }
+    .sb-user { display:flex; align-items:center; gap:.6rem; }
+    .sb-user .avatar { width:34px; height:34px; background:var(--terra); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:800; color:white; flex-shrink:0; }
+    .sb-user .uname { font-size:.82rem; font-weight:700; color:var(--cream); }
+    .sb-user .urole { font-size:.7rem; color:rgba(253,246,236,.5); }
+    .sb-logout { margin-left:auto; background:none; border:none; color:rgba(253,246,236,.4); cursor:pointer; font-size:1rem; transition:color .2s; }
+    .sb-logout:hover { color:var(--terra); }
+    .main-content { margin-left:var(--sidebar-w); min-height:100vh; }
+    .top-bar { background:white; padding:1rem 2rem; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--beige); position:sticky; top:0; z-index:50; }
+    .top-bar h1 { font-family:'Quicksand',sans-serif; font-size:1.3rem; font-weight:700; color:var(--brown); }
+    .top-bar .subtitle { font-size:.8rem; color:var(--gray); }
+    .top-actions { display:flex; gap:.7rem; align-items:center; }
+    .page { display:none; padding:2rem; }
+    .page.active { display:block; }
+
+    /* ── Stats ── */
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
+    .stat-card { background:white; border-radius:16px; padding:1.3rem 1.5rem; box-shadow:0 2px 12px rgba(74,44,10,.07); border-left:4px solid var(--terra); }
+    .stat-card:nth-child(2){border-left-color:var(--olive);} .stat-card:nth-child(3){border-left-color:var(--brown);} .stat-card:nth-child(4){border-left-color:#8b6914;}
+    .stat-val { font-family:'Quicksand',sans-serif; font-size:2.2rem; font-weight:700; color:var(--brown); line-height:1; margin-bottom:.2rem; }
+    .stat-label { font-size:.78rem; color:var(--gray); font-weight:600; }
+    .stat-sub { font-size:.72rem; color:var(--terra); font-weight:700; margin-top:.3rem; }
+
+    /* ── Buttons ── */
+    .btn { display:inline-flex; align-items:center; gap:.4rem; padding:.55rem 1.2rem; border-radius:20px; font-family:'Nunito',sans-serif; font-weight:800; font-size:.82rem; cursor:pointer; border:none; transition:all .2s; text-decoration:none; }
+    .btn-primary { background:var(--terra); color:white; } .btn-primary:hover { background:var(--terra-light); }
+    .btn-green { background:var(--olive); color:white; } .btn-green:hover { background:var(--olive-light); }
+    .btn-outline { background:white; color:var(--brown); border:2px solid var(--beige); } .btn-outline:hover { border-color:var(--terra); color:var(--terra); }
+    .btn-danger { background:var(--danger-pale); color:var(--danger); } .btn-danger:hover { background:var(--danger); color:white; }
+    .btn-sm { padding:.3rem .8rem; font-size:.75rem; }
+    .btn-icon { padding:.4rem; border-radius:8px; background:var(--cream); color:var(--gray); border:none; cursor:pointer; font-size:1rem; transition:all .2s; }
+    .btn-icon:hover { background:var(--terra-pale); color:var(--terra); }
+    .btn-icon.del:hover { background:var(--danger-pale); color:var(--danger); }
+
+    /* ── Badges ── */
+    .badge { display:inline-block; padding:.2rem .7rem; border-radius:999px; font-size:.7rem; font-weight:800; }
+    .badge-terra{background:var(--terra-pale);color:var(--terra);} .badge-olive{background:var(--olive-pale);color:var(--olive);}
+    .badge-brown{background:var(--beige);color:var(--brown);} .badge-danger{background:var(--danger-pale);color:var(--danger);}
+
+    /* ── Tables ── */
+    .table-card { background:white; border-radius:16px; box-shadow:0 2px 12px rgba(74,44,10,.07); overflow:hidden; margin-bottom:1.5rem; }
+    .table-header { display:flex; align-items:center; justify-content:space-between; padding:1.2rem 1.5rem; border-bottom:1px solid var(--beige); }
+    .table-header h3 { font-family:'Quicksand',sans-serif; font-weight:700; color:var(--brown); font-size:1rem; }
+    table { width:100%; border-collapse:collapse; }
+    th { text-align:left; padding:.7rem 1.2rem; font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--gray); background:var(--cream); border-bottom:1px solid var(--beige); }
+    td { padding:.85rem 1.2rem; font-size:.85rem; border-bottom:1px solid var(--beige); color:var(--text); }
+    tr:last-child td { border-bottom:none; } tr:hover td { background:var(--cream); }
+
+    /* ── Forms ── */
+    .form-grid { display:grid; gap:1rem; }
+    .form-grid.col2 { grid-template-columns:1fr 1fr; } .form-grid.col3 { grid-template-columns:1fr 1fr 1fr; }
+    .form-group { display:flex; flex-direction:column; gap:.3rem; }
+    .form-group label { font-size:.78rem; font-weight:800; color:var(--brown); }
+    .form-group input,.form-group select,.form-group textarea { padding:.65rem .9rem; border:2px solid var(--beige); border-radius:10px; font-family:'Nunito',sans-serif; font-size:.87rem; color:var(--text); background:var(--cream); outline:none; transition:border-color .2s; }
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus { border-color:var(--terra); background:white; }
+    .form-group textarea { min-height:90px; resize:vertical; }
+
+    /* ── Modal ── */
+    .modal-overlay { position:fixed; inset:0; background:rgba(74,44,10,.5); z-index:1000; display:none; align-items:center; justify-content:center; padding:1rem; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:white; border-radius:20px; width:100%; max-width:560px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(74,44,10,.3); }
+    .modal-header { display:flex; align-items:center; justify-content:space-between; padding:1.3rem 1.5rem; border-bottom:1px solid var(--beige); }
+    .modal-header h3 { font-family:'Quicksand',sans-serif; font-weight:700; font-size:1.1rem; color:var(--brown); }
+    .modal-close { background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--gray); line-height:1; }
+    .modal-body { padding:1.5rem; }
+    .modal-footer { padding:1rem 1.5rem; border-top:1px solid var(--beige); display:flex; gap:.7rem; justify-content:flex-end; }
+
+    /* ── Toast ── */
+    .toast { position:fixed; bottom:2rem; right:2rem; background:var(--brown); color:var(--cream); padding:.8rem 1.3rem; border-radius:12px; font-size:.85rem; font-weight:700; z-index:9999; transform:translateY(100px); opacity:0; transition:all .3s; box-shadow:0 8px 24px rgba(74,44,10,.3); }
+    .toast.show { transform:translateY(0); opacity:1; }
+    .toast.success { background:var(--olive); } .toast.error { background:var(--danger); }
+
+    /* ── Dashboard widgets ── */
+    .dash-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+    .widget-card { background:white; border-radius:16px; box-shadow:0 2px 12px rgba(74,44,10,.07); overflow:hidden; }
+    .widget-header { padding:1rem 1.3rem; border-bottom:1px solid var(--beige); display:flex; align-items:center; justify-content:space-between; }
+    .widget-header h3 { font-family:'Quicksand',sans-serif; font-weight:700; color:var(--brown); font-size:.95rem; }
+    .widget-body { padding:1rem; }
+    .widget-item { display:flex; align-items:center; gap:.8rem; padding:.6rem 0; border-bottom:1px dashed var(--beige); font-size:.84rem; }
+    .widget-item:last-child { border-bottom:none; }
+    .wi-icon { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+    .wi-icon.terra{background:var(--terra-pale);} .wi-icon.olive{background:var(--olive-pale);} .wi-icon.brown{background:var(--beige);}
+    .wi-label { font-weight:700; color:var(--brown); font-size:.84rem; }
+    .wi-sub { font-size:.74rem; color:var(--gray); }
+    .wi-right { margin-left:auto; font-size:.75rem; color:var(--gray); }
+
+    /* ── Quick actions ── */
+    .quick-actions { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
+    .qa-card { background:white; border-radius:14px; padding:1.2rem; box-shadow:0 2px 10px rgba(74,44,10,.07); text-align:center; cursor:pointer; transition:all .2s; border:2px solid transparent; }
+    .qa-card:hover { border-color:var(--terra); transform:translateY(-2px); }
+    .qa-icon { font-size:1.8rem; margin-bottom:.5rem; }
+    .qa-label { font-size:.8rem; font-weight:700; color:var(--brown); }
+    .qa-sub { font-size:.7rem; color:var(--gray); }
+
+    /* ── Section header ── */
+    .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; }
+    .section-header h2 { font-family:'Quicksand',sans-serif; font-size:1.3rem; font-weight:700; color:var(--brown); }
+    .section-header p { font-size:.82rem; color:var(--gray); }
+
+    /* ── Settings ── */
+    .settings-section { background:white; border-radius:16px; padding:1.5rem; box-shadow:0 2px 12px rgba(74,44,10,.07); margin-bottom:1.5rem; }
+    .settings-section h3 { font-family:'Quicksand',sans-serif; font-weight:700; color:var(--brown); font-size:1rem; margin-bottom:1.2rem; padding-bottom:.7rem; border-bottom:2px dashed var(--beige); }
+
+    /* ── Tags input ── */
+    .tags-wrap { display:flex; flex-wrap:wrap; gap:.4rem; padding:.5rem; border:2px solid var(--beige); border-radius:10px; background:var(--cream); min-height:44px; align-items:center; }
+    .tag-item { background:var(--terra-pale); color:var(--terra); border-radius:999px; padding:.15rem .7rem; font-size:.78rem; font-weight:700; display:flex; align-items:center; gap:.3rem; }
+    .tag-item button { background:none; border:none; color:var(--terra); cursor:pointer; font-size:.9rem; line-height:1; padding:0; }
+    .tag-input { border:none; background:none; outline:none; font-family:'Nunito',sans-serif; font-size:.85rem; padding:.2rem; min-width:80px; }
+
+    /* ── Candidatures ── */
+    .cand-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .cand-card { background:white; border-radius:16px; padding:1.2rem; box-shadow:0 2px 12px rgba(74,44,10,.07); border-left:4px solid var(--beige); }
+    .cand-card.new{border-left-color:var(--terra);} .cand-card.accepted{border-left-color:var(--olive);} .cand-card.refused{border-left-color:var(--danger);}
+    .cand-name { font-weight:800; font-size:.95rem; color:var(--brown); }
+    .cand-date { font-size:.74rem; color:var(--gray); }
+    .cand-info { font-size:.82rem; color:var(--gray); margin:.5rem 0 .7rem; line-height:1.5; }
+    .cand-actions { display:flex; gap:.5rem; flex-wrap:wrap; }
+
+    /* ── Messages ── */
+    .msg-list { display:flex; flex-direction:column; gap:.8rem; }
+    .msg-card { background:white; border-radius:14px; padding:1rem 1.2rem; box-shadow:0 2px 10px rgba(74,44,10,.06); display:flex; gap:1rem; align-items:flex-start; border-left:4px solid var(--beige); cursor:pointer; }
+    .msg-card.unread { border-left-color:var(--terra); background:var(--terra-pale); }
+    .msg-avatar { width:40px; height:40px; border-radius:50%; background:var(--terra); color:white; display:flex; align-items:center; justify-content:center; font-size:.85rem; font-weight:800; flex-shrink:0; }
+    .msg-from { font-weight:800; font-size:.9rem; color:var(--brown); }
+    .msg-subject { font-size:.78rem; color:var(--gray); }
+    .msg-text { font-size:.83rem; color:var(--gray); line-height:1.5; }
+    .msg-meta { font-size:.72rem; color:var(--gray); margin-top:.3rem; }
+
+    /* ── Gallery ── */
+    .admin-gal-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+    .admin-gal-item { border-radius:14px; overflow:hidden; position:relative; }
+    .admin-gal-ph { aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; font-size:2rem; }
+    .admin-gal-item .overlay { position:absolute; inset:0; background:rgba(74,44,10,.7); display:flex; align-items:center; justify-content:center; gap:.5rem; opacity:0; transition:opacity .2s; }
+    .admin-gal-item:hover .overlay { opacity:1; }
+    .admin-gal-caption { padding:.5rem; background:white; font-size:.75rem; font-weight:700; color:var(--brown); }
+
+    /* ── Partners ── */
+    .admin-partners-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+    .admin-partner-card { background:white; border-radius:14px; padding:1.2rem; box-shadow:0 2px 10px rgba(74,44,10,.07); display:flex; align-items:center; gap:.8rem; }
+    .admin-partner-card .pt-icon { font-size:2rem; flex-shrink:0; }
+    .admin-partner-card .pt-name { font-weight:700; font-size:.88rem; color:var(--brown); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .admin-partner-card .pt-type { font-size:.73rem; color:var(--gray); }
+    .admin-partner-card .pt-actions { display:flex; gap:.3rem; flex-shrink:0; }
+
+    /* ── Color picker ── */
+    .color-opts { display:flex; gap:.5rem; }
+    .color-opt { width:28px; height:28px; border-radius:50%; cursor:pointer; border:3px solid transparent; transition:all .2s; }
+    .color-opt.selected { border-color:var(--brown); transform:scale(1.15); }
+
+    /* ── Empty state ── */
+    .empty-state { text-align:center; padding:3rem; color:var(--gray); }
+    .empty-state .icon { font-size:3rem; margin-bottom:.8rem; }
+    .empty-state p { font-size:.88rem; }
+
+    /* ── Présences ── */
+    .rep-scroll { overflow-x:auto; }
+    .check-btn { width:30px; height:30px; border-radius:8px; border:2px solid var(--beige); background:white; cursor:pointer; font-size:1rem; display:inline-flex; align-items:center; justify-content:center; transition:all .2s; line-height:1; }
+    .check-btn.present { background:var(--olive); border-color:var(--olive); color:white; }
+    .check-btn:hover:not(.present) { border-color:var(--olive); }
+    .presence-bar { height:6px; border-radius:3px; background:var(--beige); overflow:hidden; margin-top:.3rem; }
+    .presence-fill { height:100%; border-radius:3px; background:var(--olive); }
+    .presence-fill.warn { background:#c49a00; }
+    .presence-fill.danger { background:var(--danger); }
+    .pct-ok { color:var(--olive); font-weight:800; font-size:.78rem; }
+    .pct-warn { color:#c49a00; font-weight:800; font-size:.78rem; }
+    .pct-danger { color:var(--danger); font-weight:800; font-size:.78rem; }
+
+    /* ── Cotisations ── */
+    .cot-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
+    .cot-stat { background:white; border-radius:14px; padding:1.2rem; text-align:center; box-shadow:0 2px 10px rgba(74,44,10,.07); }
+    .cot-stat-val { font-family:'Quicksand',sans-serif; font-size:1.8rem; font-weight:700; color:var(--brown); }
+    .cot-stat-label { font-size:.75rem; color:var(--gray); }
+    .status-paye { background:var(--olive-pale); color:var(--olive); padding:.2rem .7rem; border-radius:999px; font-size:.72rem; font-weight:800; }
+    .status-impaye { background:var(--danger-pale); color:var(--danger); padding:.2rem .7rem; border-radius:999px; font-size:.72rem; font-weight:800; }
+
+    /* ── Instruments ── */
+    .inst-tabs { display:flex; gap:.5rem; margin-bottom:1.5rem; }
+    .inst-tab { padding:.5rem 1.2rem; border-radius:20px; border:2px solid var(--beige); background:white; font-family:'Nunito',sans-serif; font-size:.82rem; font-weight:700; color:var(--gray); cursor:pointer; transition:all .2s; }
+    .inst-tab.active { background:var(--terra); color:white; border-color:var(--terra); }
+    .inst-panel { display:none; }
+    .inst-panel.active { display:block; }
+    .etat-bon { background:var(--olive-pale); color:var(--olive); padding:.2rem .6rem; border-radius:999px; font-size:.7rem; font-weight:800; }
+    .etat-moyen { background:var(--terra-pale); color:var(--terra); padding:.2rem .6rem; border-radius:999px; font-size:.7rem; font-weight:800; }
+    .etat-mauvais { background:var(--danger-pale); color:var(--danger); padding:.2rem .6rem; border-radius:999px; font-size:.7rem; font-weight:800; }
+    .statut-dispo { background:var(--olive-pale); color:var(--olive); padding:.2rem .6rem; border-radius:999px; font-size:.7rem; font-weight:800; }
+    .statut-prete { background:var(--terra-pale); color:var(--terra); padding:.2rem .6rem; border-radius:999px; font-size:.7rem; font-weight:800; }
+    .statut-rep { background:var(--danger-pale); color:var(--danger); padding:.2rem .6rem; border-radius:999px; font-size:.7rem; font-weight:800; }
+
+    /* ── SEO ── */
+    .seo-preview-box { background:#fff; border:1px solid #dfe1e5; border-radius:10px; padding:1.3rem 1.5rem; margin-top:1rem; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+    .seo-preview-box .sp-url { font-size:.78rem; color:#4d5156; margin-bottom:.3rem; }
+    .seo-preview-box .sp-title { font-size:1.1rem; color:#1a0dab; margin-bottom:.3rem; }
+    .seo-preview-box .sp-desc { font-size:.84rem; color:#4d5156; line-height:1.55; }
+    .char-count { font-size:.72rem; text-align:right; margin-top:.2rem; font-weight:700; }
+    .char-ok { color:var(--olive); } .char-warn { color:var(--danger); }
+
+    /* ── Logs ── */
+    .log-item { display:flex; gap:.8rem; align-items:flex-start; padding:.75rem 0; border-bottom:1px dashed var(--beige); }
+    .log-item:last-child { border-bottom:none; }
+    .log-icon { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+    .log-icon.add { background:var(--olive-pale); }
+    .log-icon.edit { background:var(--terra-pale); }
+    .log-icon.delete { background:var(--danger-pale); }
+    .log-icon.auth { background:var(--beige); }
+    .log-action { font-weight:700; color:var(--brown); font-size:.84rem; }
+    .log-detail { font-size:.76rem; color:var(--gray); margin-top:.1rem; }
+    .log-time { margin-left:auto; font-size:.72rem; color:var(--gray); white-space:nowrap; flex-shrink:0; }
+    .log-filters { display:flex; gap:.5rem; margin-bottom:1.2rem; flex-wrap:wrap; }
+    .log-filter-btn { padding:.35rem 1rem; border-radius:999px; border:2px solid var(--beige); background:white; font-family:'Nunito',sans-serif; font-size:.78rem; font-weight:700; color:var(--gray); cursor:pointer; transition:all .2s; }
+    .log-filter-btn.active { background:var(--brown); color:white; border-color:var(--brown); }
+
+    /* ── Responsive mobile ── */
+    html, body { overflow-x:hidden; }
+    .sb-toggle { display:none; }
+    .sb-backdrop { display:none; }
+    @media (max-width:900px) {
+      .sidebar { transform:translateX(-100%); transition:transform .25s; }
+      body.sb-open .sidebar { transform:none; box-shadow:0 0 40px rgba(0,0,0,.4); }
+      body.sb-open .sb-backdrop { display:block; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:99; }
+      .main-content { margin-left:0; }
+      .sb-toggle { display:flex; align-items:center; justify-content:center; width:44px; height:44px; flex-shrink:0; background:none; border:2px solid var(--beige); border-radius:12px; font-size:1.4rem; cursor:pointer; color:var(--brown); margin-right:.7rem; }
+      .top-bar { padding:.7rem 1rem; gap:.5rem; }
+      .top-bar > div:first-of-type { flex:1; min-width:0; }
+      .top-bar h1 { font-size:1.05rem; }
+      .page { padding:1rem; }
+      .stats-grid, .quick-actions, .admin-gal-grid { grid-template-columns:repeat(2,1fr); }
+      .dash-grid, .cand-grid { grid-template-columns:1fr; }
+      .admin-partners-grid, .form-grid.col3 { grid-template-columns:1fr 1fr; }
+      .table-card { overflow-x:auto; }
+      .table-card table { min-width:560px; }
+      .section-header { flex-wrap:wrap; gap:.7rem; }
+    }
+    @media (max-width:600px) {
+      .top-bar .subtitle { display:none; }
+      .top-actions .btn { padding:.45rem .7rem; font-size:.75rem; }
+      .form-grid.col2, .form-grid.col3, .admin-partners-grid, .cot-stats,
+      [style*="grid-template-columns:1fr 1fr"], [style*="grid-template-columns:repeat(3,1fr)"] { grid-template-columns:1fr !important; }
+      .login-box { width:100%; max-width:380px; padding:1.8rem 1.3rem; margin:0 1rem; }
+      .modal-overlay { padding:.5rem; }
+      .modal-footer { flex-wrap:wrap; }
+      input, select, textarea { font-size:16px !important; }
+    }
+    [role="button"]:focus-visible, button:focus-visible, a:focus-visible, .sb-item:focus-visible { outline:3px solid var(--terra); outline-offset:2px; }
+  </style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="icon">🎵</div>
+      <h1>L'Harmonie de Bucquoy</h1>
+      <p>Espace d'administration</p>
+    </div>
+    <div class="login-field">
+      <label>Identifiant</label>
+      <input type="text" id="login-user" placeholder="admin" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>Mot de passe</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Se connecter 🎶</button>
+    <p class="login-error" id="login-error">Identifiants incorrects</p>
+    <p class="login-hint">Démo : <strong>admin</strong> / <strong>harmonie2026</strong></p>
+  </div>
+</div>
+
+<!-- Admin App -->
+<div id="admin-app">
+
+  <!-- Sidebar -->
+  <div class="sb-backdrop" onclick="toggleSidebar(false)"></div>
+  <aside class="sidebar">
+    <div class="sb-header">
+      <div class="sb-logo">
+        <div class="icon">🎵</div>
+        <div>
+          <div class="name">L'Harmonie de Bucquoy</div>
+          <span class="badge">ADMIN</span>
+        </div>
+      </div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section-label">Principal</div>
+      <div class="sb-item active" onclick="showPage('dashboard',this)"><span class="si">📊</span> Tableau de bord</div>
+      <div class="sb-section-label">Contenu du site</div>
+      <div class="sb-item" onclick="showPage('agenda',this)"><span class="si">📅</span> Agenda &amp; Concerts</div>
+      <div class="sb-item" onclick="showPage('membres',this)"><span class="si">👥</span> Membres &amp; Bureau</div>
+      <div class="sb-item" onclick="showPage('galerie',this)"><span class="si">🖼️</span> Galerie &amp; Médias</div>
+      <div class="sb-item" onclick="showPage('partenaires',this)"><span class="si">🤝</span> Partenaires</div>
+      <div class="sb-item" onclick="showPage('historique',this)"><span class="si">📜</span> Notre histoire</div>
+      <div class="sb-section-label">Gestion</div>
+      <div class="sb-item" onclick="showPage('candidatures',this)"><span class="si">📝</span> Candidatures <span class="sb-badge" id="sb-badge-cand">3</span></div>
+      <div class="sb-item" onclick="showPage('messages',this)"><span class="si">✉️</span> Messages <span class="sb-badge" id="sb-badge-msg">2</span></div>
+      <div class="sb-item" onclick="showPage('presences',this)"><span class="si">✅</span> Présences <span class="sb-badge" id="sb-badge-abs" style="background:var(--olive);">0</span></div>
+      <div class="sb-item" onclick="showPage('cotisations',this)"><span class="si">💳</span> Cotisations <span class="sb-badge" id="sb-badge-cot">0</span></div>
+      <div class="sb-item" onclick="showPage('instruments',this)"><span class="si">🎺</span> Instruments</div>
+      <div class="sb-section-label">Configuration</div>
+      <div class="sb-item" onclick="showPage('parametres',this)"><span class="si">⚙️</span> Paramètres</div>
+      <div class="sb-item" onclick="showPage('seo',this)"><span class="si">🔍</span> SEO</div>
+      <div class="sb-item" onclick="showPage('logs',this)"><span class="si">📋</span> Logs d'activité</div>
+    </nav>
+    <div class="sb-footer">
+      <div class="sb-user">
+        <div class="avatar">AD</div>
+        <div>
+          <div class="uname">Administrateur</div>
+          <div class="urole">Bureau · Président</div>
+        </div>
+        <button class="sb-logout" onclick="doLogout()" title="Déconnexion">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <!-- Top bar -->
+    <div class="top-bar">
+      <button class="sb-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" onclick="toggleSidebar()">☰</button>
+      <div>
+        <h1 id="page-title">Tableau de bord</h1>
+        <div class="subtitle" id="page-subtitle">Vue d'ensemble de l'association</div>
+      </div>
+      <div class="top-actions">
+        <button class="btn btn-outline btn-sm" onclick="window.open('site_chaleureux.html')">👁️ Voir le site</button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-val">45</div><div class="stat-label">Musiciens actifs</div><div class="stat-sub">+3 cette saison</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-concerts">4</div><div class="stat-label">Concerts à venir</div><div class="stat-sub">Saison 2026</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-cand">3</div><div class="stat-label">Candidatures en attente</div><div class="stat-sub">À traiter</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-msg">2</div><div class="stat-label">Messages non lus</div><div class="stat-sub">Contact</div></div>
+      </div>
+      <div class="quick-actions">
+        <div class="qa-card" onclick="showPage('agenda',qNav('agenda'))"><div class="qa-icon">📅</div><div class="qa-label">Ajouter concert</div><div class="qa-sub">Agenda</div></div>
+        <div class="qa-card" onclick="showPage('membres',qNav('membres'))"><div class="qa-icon">👤</div><div class="qa-label">Gérer membres</div><div class="qa-sub">Bureau</div></div>
+        <div class="qa-card" onclick="showPage('candidatures',qNav('candidatures'))"><div class="qa-icon">📝</div><div class="qa-label">Candidatures</div><div class="qa-sub" id="qa-cand-sub">3 en attente</div></div>
+        <div class="qa-card" onclick="showPage('messages',qNav('messages'))"><div class="qa-icon">✉️</div><div class="qa-label">Messages</div><div class="qa-sub" id="qa-msg-sub">2 non lus</div></div>
+      </div>
+      <div class="dash-grid">
+        <div class="widget-card">
+          <div class="widget-header"><h3>📅 Prochains concerts</h3><button class="btn btn-outline btn-sm" onclick="showPage('agenda',qNav('agenda'))">Gérer</button></div>
+          <div class="widget-body" id="dash-concerts"></div>
+        </div>
+        <div class="widget-card">
+          <div class="widget-header"><h3>📝 Dernières candidatures</h3><button class="btn btn-outline btn-sm" onclick="showPage('candidatures',qNav('candidatures'))">Voir tout</button></div>
+          <div class="widget-body" id="dash-cands"></div>
+        </div>
+        <div class="widget-card">
+          <div class="widget-header"><h3>✉️ Messages récents</h3><button class="btn btn-outline btn-sm" onclick="showPage('messages',qNav('messages'))">Voir tout</button></div>
+          <div class="widget-body" id="dash-msgs"></div>
+        </div>
+        <div class="widget-card">
+          <div class="widget-header"><h3>🎼 Bureau de l'association</h3><button class="btn btn-outline btn-sm" onclick="showPage('membres',qNav('membres'))">Gérer</button></div>
+          <div class="widget-body" id="dash-bureau"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AGENDA -->
+    <div class="page" id="page-agenda">
+      <div class="section-header">
+        <div><h2>Agenda &amp; Concerts</h2><p>Gérez les concerts à venir et les événements passés</p></div>
+        <button class="btn btn-primary" onclick="openConcertModal()">+ Nouveau concert</button>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><h3>Concerts à venir</h3><span class="badge badge-terra" id="upcoming-count"></span></div>
+        <table><thead><tr><th>Date</th><th>Nom</th><th>Lieu</th><th>Heure</th><th>Tarif</th><th>Tags</th><th>Actions</th></tr></thead>
+        <tbody id="concerts-tbody"></tbody></table>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><h3>Concerts passés</h3><button class="btn btn-outline btn-sm" onclick="openModal('past-concert-modal')">+ Ajouter</button></div>
+        <table><thead><tr><th>Nom</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody id="past-concerts-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- MEMBRES -->
+    <div class="page" id="page-membres">
+      <div class="section-header">
+        <div><h2>Membres &amp; Bureau</h2><p>Gérez l'équipe dirigeante de l'association</p></div>
+        <button class="btn btn-primary" onclick="openMembreModal()">+ Nouveau membre</button>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><h3>Bureau de l'association</h3></div>
+        <table><thead><tr><th>Avatar</th><th>Nom</th><th>Rôle</th><th>Actions</th></tr></thead>
+        <tbody id="membres-tbody"></tbody></table>
+      </div>
+      <div class="settings-section" style="margin-top:1.5rem;">
+        <h3>🎺 Instruments recherchés</h3>
+        <p style="font-size:.82rem;color:var(--gray);margin-bottom:1rem;">Appuyez sur Entrée pour ajouter, cliquez × pour retirer</p>
+        <div class="tags-wrap" id="instruments-wrap">
+          <input class="tag-input" id="instrument-input" placeholder="Ajouter un instrument…" onkeydown="addInstrument(event)">
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>💳 Cotisations annuelles</h3>
+        <div class="form-grid col3">
+          <div class="form-group"><label>Adultes (€)</label><input type="number" id="cot-adulte" value="80"></div>
+          <div class="form-group"><label>Moins de 18 ans (€)</label><input type="number" id="cot-junior" value="50"></div>
+          <div class="form-group"><label>Ce qui est inclus</label><input type="text" id="cot-incl" value="Partitions, assurance et sorties"></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:1rem;" onclick="showToast('Cotisations enregistrées !','success')">Enregistrer</button>
+      </div>
+    </div>
+
+    <!-- GALERIE -->
+    <div class="page" id="page-galerie">
+      <div class="section-header">
+        <div><h2>Galerie &amp; Médias</h2><p>Photos, vidéos et enregistrements audios</p></div>
+        <button class="btn btn-primary" onclick="openModal('media-modal')">+ Ajouter un média</button>
+      </div>
+      <div class="table-card" style="margin-bottom:1.5rem;">
+        <div class="table-header"><h3>Photos de la galerie</h3></div>
+        <div style="padding:1.2rem;"><div class="admin-gal-grid" id="gal-grid"></div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><h3>Vidéos &amp; Audios</h3></div>
+        <table><thead><tr><th>Type</th><th>Titre</th><th>Durée / Source</th><th>Actions</th></tr></thead>
+        <tbody id="medias-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- PARTENAIRES -->
+    <div class="page" id="page-partenaires">
+      <div class="section-header">
+        <div><h2>Partenaires &amp; Sponsors</h2><p>Acteurs locaux et institutionnels</p></div>
+        <button class="btn btn-primary" onclick="openModal('partner-modal')">+ Nouveau partenaire</button>
+      </div>
+      <div class="admin-partners-grid" id="partners-grid"></div>
+    </div>
+
+    <!-- HISTORIQUE -->
+    <div class="page" id="page-historique">
+      <div class="section-header">
+        <div><h2>Notre histoire</h2><p>Chronologie, citation et valeurs de l'association</p></div>
+        <button class="btn btn-primary" onclick="openModal('histoire-modal')">+ Ajouter un jalon</button>
+      </div>
+      <div class="table-card" style="margin-bottom:1.5rem;">
+        <div class="table-header"><h3>Jalons historiques</h3></div>
+        <table><thead><tr><th>Année</th><th>Titre</th><th>Description</th><th>Actions</th></tr></thead>
+        <tbody id="histoire-tbody"></tbody></table>
+      </div>
+      <div class="settings-section">
+        <h3>💬 Citation mise en avant</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>Texte</label><textarea id="quote-text">La musique nous rassemble, nous élève, nous donne envie de partager ce que nous avons de meilleur. L'Harmonie de Bucquoy, c'est avant tout une grande famille.</textarea></div>
+          <div class="form-group"><label>Auteur</label><input type="text" id="quote-author" value="Jean-Pierre Martin, Président"></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:.8rem;" onclick="showToast('Citation mise à jour !','success')">Enregistrer</button>
+      </div>
+      <div class="settings-section">
+        <h3>🌟 Valeurs de l'association</h3>
+        <div id="valeurs-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem;"></div>
+        <button class="btn btn-outline btn-sm" onclick="openModal('valeur-modal')">+ Ajouter une valeur</button>
+      </div>
+    </div>
+
+    <!-- CANDIDATURES -->
+    <div class="page" id="page-candidatures">
+      <div class="section-header">
+        <div><h2>Candidatures d'adhésion</h2><p>Demandes reçues via le formulaire du site</p></div>
+        <select onchange="filterCandidatures(this.value)" style="padding:.4rem .8rem;border:2px solid var(--beige);border-radius:10px;font-family:'Nunito',sans-serif;font-size:.82rem;outline:none;background:white;color:var(--brown);">
+          <option value="all">Toutes</option>
+          <option value="new">En attente</option>
+          <option value="accepted">Acceptées</option>
+          <option value="refused">Refusées</option>
+        </select>
+      </div>
+      <div class="cand-grid" id="cand-grid"></div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="page" id="page-messages">
+      <div class="section-header">
+        <div><h2>Messages reçus</h2><p>Formulaire de contact du site</p></div>
+        <button class="btn btn-outline btn-sm" onclick="markAllRead()">✓ Tout marquer comme lu</button>
+      </div>
+      <div class="msg-list" id="messages-list"></div>
+    </div>
+
+    <!-- PARAMETRES -->
+    <div class="page" id="page-parametres">
+      <div class="section-header"><h2>Paramètres généraux</h2></div>
+      <div class="settings-section">
+        <h3>📍 Informations de contact</h3>
+        <div class="form-grid col2">
+          <div class="form-group"><label>Adresse</label><input type="text" id="set-adresse" value="Salle polyvalente, Rue de la Mairie, 62116 Bucquoy"></div>
+          <div class="form-group"><label>E-mail</label><input type="email" id="set-email" value="harmonie.bucquoy@gmail.com"></div>
+          <div class="form-group"><label>Téléphone (Président)</label><input type="tel" id="set-tel" value="06 12 34 56 78"></div>
+          <div class="form-group"><label>Répétitions</label><input type="text" id="set-jour" value="Mercredi · 20h00 – 22h00"></div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>📣 Texte hero (page d'accueil)</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>Slogan principal</label><textarea id="set-slogan" style="min-height:70px;">45 musiciens amateurs passionnés, une tradition musicale centenaire et une bonne humeur communicative au cœur du Pas-de-Calais. On n'attend plus que vous !</textarea></div>
+          <div class="form-group"><label>Sous-titre de la nav</label><input type="text" id="set-nav-sub" value="Association musicale · Pas-de-Calais"></div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>📱 Réseaux sociaux</h3>
+        <div class="form-grid col3">
+          <div class="form-group"><label>Facebook (URL)</label><input type="url" id="set-fb" placeholder="https://facebook.com/…"></div>
+          <div class="form-group"><label>YouTube (URL)</label><input type="url" id="set-yt" placeholder="https://youtube.com/…"></div>
+          <div class="form-group"><label>Instagram (URL)</label><input type="url" id="set-ig" placeholder="https://instagram.com/…"></div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>🔐 Sécurité</h3>
+        <div class="form-grid col2">
+          <div class="form-group"><label>Nouveau mot de passe</label><input type="password" id="set-pwd" placeholder="Laisser vide pour ne pas changer"></div>
+          <div class="form-group"><label>Confirmer le mot de passe</label><input type="password" id="set-pwd2" placeholder="Confirmer…"></div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="saveSettings()">💾 Enregistrer les paramètres</button>
+    </div>
+
+    <!-- PRÉSENCES -->
+    <div class="page" id="page-presences">
+      <div class="section-header">
+        <div><h2>Présences aux répétitions</h2><p>Cochez les présents chaque mercredi · Alertes sous 60%</p></div>
+        <button class="btn btn-primary" onclick="openModal('rep-modal')">+ Nouvelle répétition</button>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><h3>Feuille de présence</h3><span class="badge badge-terra" id="rep-count-badge"></span></div>
+        <div style="padding:1.2rem;" class="rep-scroll">
+          <table id="presence-table" style="min-width:600px;">
+            <thead id="presence-thead"></thead>
+            <tbody id="presence-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><h3>Taux de présence par musicien</h3></div>
+        <div style="padding:1.2rem;" id="presence-stats"></div>
+      </div>
+    </div>
+
+    <!-- COTISATIONS -->
+    <div class="page" id="page-cotisations">
+      <div class="section-header">
+        <div><h2>Suivi des cotisations</h2><p>Saison 2026 — Statut des paiements</p></div>
+        <div style="display:flex;gap:.5rem;">
+          <select id="cot-filter" onchange="renderCotisations()" style="padding:.4rem .8rem;border:2px solid var(--beige);border-radius:10px;font-family:'Nunito',sans-serif;font-size:.82rem;outline:none;background:white;color:var(--brown);">
+            <option value="all">Tous</option>
+            <option value="paye">Payés</option>
+            <option value="impaye">Impayés</option>
+          </select>
+        </div>
+      </div>
+      <div class="cot-stats" id="cot-stats-row"></div>
+      <div class="table-card">
+        <div class="table-header"><h3>Liste des membres</h3></div>
+        <table><thead><tr><th>Membre</th><th>Rôle</th><th>Montant</th><th>Statut</th><th>Date paiement</th><th>Mode de règlement</th><th>Actions</th></tr></thead>
+        <tbody id="cot-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- INSTRUMENTS -->
+    <div class="page" id="page-instruments">
+      <div class="section-header">
+        <div><h2>Inventaire des instruments</h2><p>Matériel de l'association et prêts aux membres</p></div>
+        <div style="display:flex;gap:.5rem;">
+          <button class="btn btn-outline" onclick="openModal('pret-modal')">📤 Enregistrer un prêt</button>
+          <button class="btn btn-primary" onclick="openModal('instrument-modal')">+ Ajouter un instrument</button>
+        </div>
+      </div>
+      <div class="inst-tabs">
+        <button class="inst-tab active" onclick="switchInstTab('inventaire',this)">🎺 Inventaire complet</button>
+        <button class="inst-tab" onclick="switchInstTab('prets',this)">📤 Prêts en cours</button>
+      </div>
+      <div class="inst-panel active" id="inst-panel-inventaire">
+        <div class="table-card">
+          <div class="table-header"><h3>Instruments de l'association</h3><span class="badge badge-terra" id="inst-count-badge"></span></div>
+          <table><thead><tr><th>Instrument</th><th>N° de série</th><th>État</th><th>Statut</th><th>Prêté à</th><th>Depuis</th><th>Actions</th></tr></thead>
+          <tbody id="inst-tbody"></tbody></table>
+        </div>
+      </div>
+      <div class="inst-panel" id="inst-panel-prets">
+        <div class="table-card">
+          <div class="table-header"><h3>Prêts en cours</h3></div>
+          <table><thead><tr><th>Instrument</th><th>Prêté à</th><th>Depuis</th><th>Actions</th></tr></thead>
+          <tbody id="prets-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO -->
+    <div class="page" id="page-seo">
+      <div class="section-header"><h2>Référencement (SEO)</h2></div>
+      <div class="settings-section">
+        <h3>🔍 Balises principales</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Titre de la page (balise &lt;title&gt;)</label>
+            <input type="text" id="seo-title" value="L'Harmonie de Bucquoy — Association musicale · Pas-de-Calais" oninput="updateSeoPreview(); updateCharCount('seo-title','seo-title-count',60)">
+            <div class="char-count" id="seo-title-count"></div>
+          </div>
+          <div class="form-group">
+            <label>Méta description</label>
+            <textarea id="seo-desc" style="min-height:80px;" oninput="updateSeoPreview(); updateCharCount('seo-desc','seo-desc-count',160)">Association musicale fondée en 1892 à Bucquoy, Pas-de-Calais. 45 musiciens passionnés, concerts gratuits, répétitions chaque mercredi. Rejoignez-nous !</textarea>
+            <div class="char-count" id="seo-desc-count"></div>
+          </div>
+          <div class="form-group">
+            <label>Mots-clés (séparés par virgule)</label>
+            <input type="text" id="seo-keywords" value="harmonie, Bucquoy, musique, association, concerts, Pas-de-Calais">
+          </div>
+        </div>
+        <p style="font-size:.8rem;color:var(--gray);margin-top:1rem;font-weight:600;">Aperçu Google :</p>
+        <div class="seo-preview-box">
+          <div class="sp-url">https://harmonie-bucquoy.fr</div>
+          <div class="sp-title" id="seo-preview-title"></div>
+          <div class="sp-desc" id="seo-preview-desc"></div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>📱 Partage sur les réseaux (Open Graph)</h3>
+        <div class="form-grid col2">
+          <div class="form-group"><label>Titre OG</label><input type="text" id="og-title" value="L'Harmonie de Bucquoy"></div>
+          <div class="form-group"><label>Description OG</label><input type="text" id="og-desc" value="Association musicale centenaire au cœur du Pas-de-Calais"></div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="saveSeo()">💾 Enregistrer le SEO</button>
+    </div>
+
+    <!-- LOGS -->
+    <div class="page" id="page-logs">
+      <div class="section-header">
+        <div><h2>Logs d'activité</h2><p>Historique de toutes les actions effectuées dans l'admin</p></div>
+        <button class="btn btn-danger btn-sm" onclick="clearLogs()">🗑️ Vider les logs</button>
+      </div>
+      <div class="settings-section">
+        <div class="log-filters">
+          <button class="log-filter-btn active" onclick="filterLogs('all',this)">Tout</button>
+          <button class="log-filter-btn" onclick="filterLogs('add',this)">➕ Ajouts</button>
+          <button class="log-filter-btn" onclick="filterLogs('edit',this)">✏️ Modifications</button>
+          <button class="log-filter-btn" onclick="filterLogs('delete',this)">🗑️ Suppressions</button>
+          <button class="log-filter-btn" onclick="filterLogs('auth',this)">🔐 Connexions</button>
+          <button class="log-filter-btn" onclick="filterLogs('status',this)">🔄 Statuts</button>
+        </div>
+        <div id="logs-list"></div>
+      </div>
+    </div>
+
+  </div><!-- .main-content -->
+</div><!-- #admin-app -->
+
+<div class="toast" id="toast"></div>
+
+<!-- ── MODALS ── -->
+
+<!-- Concert -->
+<div class="modal-overlay" id="concert-modal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="concert-modal-title">Nouveau concert</h3><button class="modal-close" onclick="closeModal('concert-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Nom du concert</label><input type="text" id="c-nom" placeholder="Concert de la Saint-Jean"></div>
+        <div class="form-grid col2">
+          <div class="form-group"><label>Jour</label><input type="text" id="c-jour" placeholder="14"></div>
+          <div class="form-group"><label>Mois / Année</label><input type="text" id="c-mois" placeholder="Juin 2026"></div>
+        </div>
+        <div class="form-grid col2">
+          <div class="form-group"><label>Lieu</label><input type="text" id="c-lieu" placeholder="Place de Bucquoy"></div>
+          <div class="form-group"><label>Heure</label><input type="text" id="c-heure" placeholder="15h00"></div>
+        </div>
+        <div class="form-grid col2">
+          <div class="form-group"><label>Tarif</label><input type="text" id="c-tarif" placeholder="Libre / 5 € / Don libre"></div>
+          <div class="form-group"><label>Couleur</label>
+            <select id="c-color"><option value="terra">Rouge (terra)</option><option value="olive">Vert (olive)</option><option value="brown">Marron</option></select>
+          </div>
+        </div>
+        <div class="form-group"><label>Programme / description</label><textarea id="c-desc" placeholder="Marches, variétés…"></textarea></div>
+        <div class="form-group"><label>Tags (séparés par virgule)</label><input type="text" id="c-tags" placeholder="En plein air, Entrée libre"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('concert-modal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveConcert()">Enregistrer 💾</button>
+    </div>
+  </div>
+</div>
+
+<!-- Concert passé -->
+<div class="modal-overlay" id="past-concert-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Concert passé</h3><button class="modal-close" onclick="closeModal('past-concert-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Nom</label><input type="text" id="pc-nom" placeholder="Kermesse de Bucquoy"></div>
+        <div class="form-group"><label>Date</label><input type="text" id="pc-date" placeholder="7 septembre 2025"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('past-concert-modal')">Annuler</button>
+      <button class="btn btn-primary" onclick="savePastConcert()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Membre -->
+<div class="modal-overlay" id="membre-modal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="membre-modal-title">Nouveau membre du bureau</h3><button class="modal-close" onclick="closeModal('membre-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-grid col2">
+          <div class="form-group"><label>Prénom</label><input type="text" id="m-prenom" placeholder="Jean-Pierre"></div>
+          <div class="form-group"><label>Nom</label><input type="text" id="m-nom" placeholder="Martin"></div>
+        </div>
+        <div class="form-group"><label>Rôle</label><input type="text" id="m-role" placeholder="Président"></div>
+        <div class="form-group"><label>Initiales (2 lettres)</label><input type="text" id="m-initiales" maxlength="2" placeholder="JM"></div>
+        <div class="form-group">
+          <label>Couleur de l'avatar</label>
+          <div class="color-opts">
+            <div class="color-opt selected" style="background:var(--terra);" data-color="terra" onclick="selectColor(this)"></div>
+            <div class="color-opt" style="background:var(--olive);" data-color="olive" onclick="selectColor(this)"></div>
+            <div class="color-opt" style="background:var(--brown);" data-color="brown" onclick="selectColor(this)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('membre-modal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveMembre()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Média -->
+<div class="modal-overlay" id="media-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Ajouter un média</h3><button class="modal-close" onclick="closeModal('media-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Type</label>
+          <select id="med-type"><option value="photo">📷 Photo</option><option value="video">🎬 Vidéo</option><option value="audio">🎵 Audio</option><option value="interview">🎙️ Interview</option></select>
+        </div>
+        <div class="form-group"><label>Titre / Légende</label><input type="text" id="med-titre" placeholder="Concert Saint-Jean 2026"></div>
+        <div class="form-group"><label>Durée / Source</label><input type="text" id="med-meta" placeholder="1h24 min · Stream live"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('media-modal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveMedia()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Partenaire -->
+<div class="modal-overlay" id="partner-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Nouveau partenaire</h3><button class="modal-close" onclick="closeModal('partner-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Nom</label><input type="text" id="p-nom" placeholder="Commune de Bucquoy"></div>
+        <div class="form-group"><label>Type / Catégorie</label><input type="text" id="p-type" placeholder="Soutien institutionnel"></div>
+        <div class="form-group"><label>Icône (emoji)</label><input type="text" id="p-icon" placeholder="🏛️" maxlength="2"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('partner-modal')">Annuler</button>
+      <button class="btn btn-primary" onclick="savePartner()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Jalon historique -->
+<div class="modal-overlay" id="histoire-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Ajouter un jalon historique</h3><button class="modal-close" onclick="closeModal('histoire-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Année / Période</label><input type="text" id="h-annee" placeholder="1950 — Tournée nationale"></div>
+        <div class="form-group"><label>Titre</label><input type="text" id="h-titre" placeholder="Un nouveau chapitre"></div>
+        <div class="form-group"><label>Description</label><textarea id="h-desc" placeholder="Description de cet événement…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('histoire-modal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveHistoire()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Valeur -->
+<div class="modal-overlay" id="valeur-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Ajouter une valeur</h3><button class="modal-close" onclick="closeModal('valeur-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid col2">
+        <div class="form-group"><label>Icône (emoji)</label><input type="text" id="v-icon" placeholder="🎵" maxlength="2"></div>
+        <div class="form-group"><label>Label</label><input type="text" id="v-label" placeholder="Excellence musicale"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('valeur-modal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveValeur()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Nouvelle répétition -->
+<div class="modal-overlay" id="rep-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Nouvelle répétition</h3><button class="modal-close" onclick="closeModal('rep-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Date de la répétition</label><input type="date" id="rep-date"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('rep-modal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveRepetition()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- Marquer cotisation payée -->
+<div class="modal-overlay" id="cotisation-modal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="cot-modal-title">Enregistrer un paiement</h3><button class="modal-close" onclick="closeModal('cotisation-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Montant (€)</label><input type="number" id="cot-montant" value="80"></div>
+        <div class="form-group"><label>Date de paiement</label><input type="date" id="cot-date"></div>
+        <div class="form-group"><label>Mode de règlement</label>
+          <select id="cot-mode"><option>Chèque</option><option>Virement</option><option>Espèces</option><option>CB</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('cotisation-modal')">Annuler</button>
+      <button class="btn btn-green" onclick="saveCotisation()">✓ Marquer comme payé</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ajouter instrument -->
+<div class="modal-overlay" id="instrument-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Ajouter un instrument</h3><button class="modal-close" onclick="closeModal('instrument-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Nom de l'instrument</label><input type="text" id="inst-nom" placeholder="Trompette Yamaha YTR-2330"></div>
+        <div class="form-group"><label>Numéro de série</label><input type="text" id="inst-serie" placeholder="YTR-001"></div>
+        <div class="form-grid col2">
+          <div class="form-group"><label>État</label>
+            <select id="inst-etat"><option value="bon">Bon état</option><option value="moyen">État moyen</option><option value="mauvais">Mauvais état</option></select>
+          </div>
+          <div class="form-group"><label>Statut</label>
+            <select id="inst-statut"><option value="disponible">Disponible</option><option value="reparation">En réparation</option></select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('instrument-modal')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveInstrument()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Enregistrer un prêt -->
+<div class="modal-overlay" id="pret-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Enregistrer un prêt</h3><button class="modal-close" onclick="closeModal('pret-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Instrument</label><select id="pret-inst-id"></select></div>
+        <div class="form-group"><label>Prêté à (membre)</label><select id="pret-membre-id"></select></div>
+        <div class="form-group"><label>Date du prêt</label><input type="date" id="pret-date"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('pret-modal')">Annuler</button>
+      <button class="btn btn-primary" onclick="savePret()">Enregistrer le prêt</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+let concerts = [
+  {id:1,nom:"Concert de la Saint-Jean",jour:"14",mois:"Juin 2026",lieu:"Place du Général de Gaulle, Bucquoy",heure:"15h00",tarif:"Libre",color:"terra",desc:"Marches, variétés & musiques de films",tags:["En plein air","Entrée libre"]},
+  {id:2,nom:"Festival des Harmonies du Nord",jour:"22",mois:"Août 2026",lieu:"Place des Héros, Arras",heure:"18h00",tarif:"5 €",color:"olive",desc:"",tags:["Festival"]},
+  {id:3,nom:"Grand Concert de Noël ❄️",jour:"05",mois:"Déc. 2026",lieu:"Église Saint-Pierre, Bucquoy",heure:"20h30",tarif:"Don libre",color:"brown",desc:"",tags:["Noël"]},
+  {id:4,nom:"Concert de Printemps 🌸",jour:"?",mois:"Printemps 2027",lieu:"Salle des fêtes, Bucquoy",heure:"À venir",tarif:"À venir",color:"terra",desc:"",tags:[]}
+];
+let pastConcerts = [
+  {id:1,nom:"Concert du Souvenir — Arras",date:"11 novembre 2025"},
+  {id:2,nom:"Kermesse de Bucquoy",date:"7 septembre 2025"},
+  {id:3,nom:"Tournée des Hauts-de-France",date:"Juin 2025"},
+  {id:4,nom:"Concert de Printemps — Salle des fêtes",date:"15 mars 2025"}
+];
+let membres = [
+  {id:1,prenom:"Jean-Pierre",nom:"Martin",role:"Président",initiales:"JM",color:"terra"},
+  {id:2,prenom:"Sophie",nom:"Delacroix",role:"Vice-Présidente",initiales:"SD",color:"olive"},
+  {id:3,prenom:"Mathieu",nom:"Leroy",role:"Secrétaire",initiales:"ML",color:"brown"},
+  {id:4,prenom:"Isabelle",nom:"Fontaine",role:"Trésorière",initiales:"IF",color:"olive"},
+  {id:5,prenom:"François",nom:"Beaumont",role:"Chef d'orchestre",initiales:"FB",color:"terra"},
+  {id:6,prenom:"Clara",nom:"Bernard",role:"Responsable jeunes",initiales:"CB",color:"brown"}
+];
+let instruments = ["Flûte traversière","Clarinette","Saxophone alto","Saxophone ténor","Trompette","Cor d'harmonie","Trombone","Euphonium","Percussions"];
+let candidatures = [
+  {id:1,prenom:"Lucas",nom:"Moreau",email:"lucas.m@email.fr",tel:"06 11 22 33 44",instrument:"Trompette",niveau:"Intermédiaire",message:"Passionné de musique depuis 10 ans, je cherche un ensemble convivial.",date:"02 juin 2026",status:"new"},
+  {id:2,prenom:"Ambre",nom:"Lefèvre",email:"ambre.l@email.fr",tel:"06 55 66 77 88",instrument:"Flûte traversière",niveau:"Avancé",message:"Ancienne élève du conservatoire de Lens.",date:"01 juin 2026",status:"new"},
+  {id:3,prenom:"Thomas",nom:"Girard",email:"t.girard@email.fr",tel:"06 99 00 11 22",instrument:"Percussions",niveau:"Débutant",message:"Je débute et souhaite progresser dans un cadre bienveillant.",date:"28 mai 2026",status:"new"},
+  {id:4,prenom:"Marie",nom:"Dumont",email:"marie.d@email.fr",tel:"06 33 44 55 66",instrument:"Clarinette",niveau:"Avancé",message:"",date:"20 mai 2026",status:"accepted"}
+];
+let messages = [
+  {id:1,prenom:"Paul",nom:"Renard",email:"paul.r@email.fr",sujet:"Adhésion / Rejoindre",message:"Bonjour ! Je suis intéressé pour rejoindre l'harmonie. Quelles sont les prochaines étapes ?",date:"03 juin 2026",read:false},
+  {id:2,prenom:"Mairie",nom:"de Bucquoy",email:"mairie@bucquoy.fr",sujet:"Partenariat ou don",message:"Bonjour, nous souhaiterions discuter du soutien pour la saison 2027.",date:"01 juin 2026",read:false},
+  {id:3,prenom:"Sylvie",nom:"Petit",email:"sylvie.p@email.fr",sujet:"Concert / Billetterie",message:"Y a-t-il des places réservées pour le concert de Noël pour les personnes à mobilité réduite ?",date:"28 mai 2026",read:true}
+];
+let galerie = [
+  {id:1,type:"photo",titre:"Concert Saint-Jean 2025",bg:"linear-gradient(135deg,var(--terra) 0%,#7a1f00 100%)"},
+  {id:2,type:"photo",titre:"Festival Arras",bg:"linear-gradient(135deg,var(--olive) 0%,#2d4010 100%)"},
+  {id:3,type:"photo",titre:"Concert de Noël 2025",bg:"linear-gradient(135deg,var(--brown) 0%,#2a1205 100%)"},
+  {id:4,type:"photo",titre:"Répétition hebdo",bg:"linear-gradient(135deg,#8b6914 0%,#5c4005 100%)"},
+  {id:5,type:"photo",titre:"Kermesse 2025",bg:"linear-gradient(135deg,var(--terra-light) 0%,var(--terra) 100%)"}
+];
+let medias = [
+  {id:1,type:"video",titre:"Concert de Noël 2025 — Intégral",meta:"Stream live · 1h24 min"},
+  {id:2,type:"audio",titre:"« La Victoire » — Marche officielle",meta:"Studio 2024 · 3 min 42"},
+  {id:3,type:"interview",titre:"Interview du chef François Beaumont",meta:"La Voix du Nord · Sept. 2025"},
+  {id:4,type:"audio",titre:"Concert de Printemps 2025 — Audio",meta:"Live enregistré · 58 min"}
+];
+let partenaires = [
+  {id:1,nom:"Commune de Bucquoy",type:"Soutien institutionnel",icon:"🏛️"},
+  {id:2,nom:"Conseil Départemental du Pas-de-Calais",type:"Subvention culturelle",icon:"🏛️"},
+  {id:3,nom:"Fédération Musicale Nord–Pas-de-Calais",type:"Partenaire fédéral",icon:"🎵"},
+  {id:4,nom:"Crédit Agricole Nord de France",type:"Sponsor principal",icon:"🏦"},
+  {id:5,nom:"Boulangerie Leclercq",type:"Sponsor local",icon:"🥖"},
+  {id:6,nom:"SARL Moreau Plomberie",type:"Mécène",icon:"🔧"}
+];
+let histoire = [
+  {id:1,annee:"1892 — Fondation",titre:"Les origines",desc:"Un groupe de passionnés du canton de Bucquoy fonde l'harmonie avec 20 instrumentistes bénévoles."},
+  {id:2,annee:"1918 — Reconstruction",titre:"Renaître après la guerre",desc:"Après la Grande Guerre, l'harmonie renaît de ses cendres, symbole puissant de résilience."},
+  {id:3,annee:"2005 — Section jeunes",titre:"L'harmonie s'ouvre aux enfants",desc:"Création d'un programme d'éveil et d'initiation musicale pour les enfants dès 8 ans."}
+];
+let valeurs = [
+  {id:1,icon:"🎵",label:"Excellence musicale"},
+  {id:2,icon:"🤝",label:"Convivialité"},
+  {id:3,icon:"🌳",label:"Ancrage local"},
+  {id:4,icon:"🌱",label:"Transmission"}
+];
+let repetitions = [
+  {id:1, date:"2026-05-14", label:"14 mai 2026", presences:[1,2,3,4,5]},
+  {id:2, date:"2026-05-21", label:"21 mai 2026", presences:[1,2,4,5,6]},
+  {id:3, date:"2026-05-28", label:"28 mai 2026", presences:[1,3,4,5]},
+  {id:4, date:"2026-06-04", label:"4 juin 2026", presences:[2,3,5,6]}
+];
+let cotisations = [
+  {id:1, membreId:1, annee:2026, montant:80, statut:"paye", datePaiement:"15 jan. 2026", mode:"Virement"},
+  {id:2, membreId:2, annee:2026, montant:80, statut:"paye", datePaiement:"20 jan. 2026", mode:"Chèque"},
+  {id:3, membreId:3, annee:2026, montant:80, statut:"impaye", datePaiement:null, mode:null},
+  {id:4, membreId:4, annee:2026, montant:80, statut:"paye", datePaiement:"10 fév. 2026", mode:"Espèces"},
+  {id:5, membreId:5, annee:2026, montant:80, statut:"impaye", datePaiement:null, mode:null},
+  {id:6, membreId:6, annee:2026, montant:50, statut:"paye", datePaiement:"5 jan. 2026", mode:"Chèque"}
+];
+let instrumentsAsso = [
+  {id:1, nom:"Trompette Yamaha YTR-2330", serie:"YTR-001", etat:"bon", statut:"prete", preteA:3, depuis:"01 sept. 2025"},
+  {id:2, nom:"Clarinette Buffet Crampon E11", serie:"BC-E11-042", etat:"bon", statut:"disponible", preteA:null, depuis:null},
+  {id:3, nom:"Saxophone alto Yamaha YAS-280", serie:"YAS-007", etat:"moyen", statut:"disponible", preteA:null, depuis:null},
+  {id:4, nom:"Trombone Bach TB200B", serie:"TB200B-015", etat:"mauvais", statut:"reparation", preteA:null, depuis:null},
+  {id:5, nom:"Cor d'harmonie Holton H177", serie:"H177-003", etat:"bon", statut:"prete", preteA:2, depuis:"15 sept. 2025"}
+];
+let logs = [
+  {id:1, type:"auth", action:"Connexion admin", detail:"Session ouverte", time:now()},
+  {id:2, type:"edit", action:"Membre modifié", detail:"François Beaumont — Chef d'orchestre", time:"03/06/2026 14:35"},
+  {id:3, type:"add", action:"Concert ajouté", detail:"Concert de la Saint-Jean · 14 Juin 2026", time:"02/06/2026 09:12"},
+  {id:4, type:"status", action:"Candidature acceptée", detail:"Marie Dumont — Clarinette", time:"01/06/2026 11:20"},
+  {id:5, type:"delete", action:"Message supprimé", detail:"Message de Paul Renard", time:"01/06/2026 08:05"}
+];
+let cotEditingId = null;
+let logFilter = "all";
+let selectedColor = "terra";
+let editingId = null;
+let currentFilter = "all";
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+function doLogin(){
+  const u=document.getElementById('login-user').value.trim();
+  const p=document.getElementById('login-pass').value;
+  if(u==='admin'&&p==='harmonie2026'){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-app').style.display='block';
+    logActivity('auth','Connexion admin','Session ouverte — identifiant : '+u);
+    renderAll();
+  } else {
+    document.getElementById('login-error').style.display='block';
+  }
+}
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('login-screen').style.display!=='none'&&e.key==='Enter') doLogin();
+});
+function doLogout(){
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('admin-app').style.display='none';
+  document.getElementById('login-user').value='';
+  document.getElementById('login-pass').value='';
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+const pageCfg={
+  dashboard:{title:"Tableau de bord",sub:"Vue d'ensemble de l'association"},
+  agenda:{title:"Agenda & Concerts",sub:"Gérez les concerts et événements musicaux"},
+  membres:{title:"Membres & Bureau",sub:"Équipe dirigeante, musiciens et cotisations"},
+  galerie:{title:"Galerie & Médias",sub:"Photos, vidéos et enregistrements"},
+  partenaires:{title:"Partenaires & Sponsors",sub:"Acteurs locaux et institutionnels"},
+  historique:{title:"Notre histoire",sub:"Chronologie, citations et valeurs"},
+  candidatures:{title:"Candidatures d'adhésion",sub:"Demandes reçues via le formulaire du site"},
+  messages:{title:"Messages reçus",sub:"Formulaire de contact"},
+  parametres:{title:"Paramètres généraux",sub:"Informations de contact, slogan, réseaux sociaux"},
+  presences:{title:"Présences aux répétitions",sub:"Feuilles de présence hebdomadaires"},
+  cotisations:{title:"Suivi des cotisations",sub:"Statut des paiements — Saison 2026"},
+  instruments:{title:"Inventaire des instruments",sub:"Matériel de l'association et prêts"},
+  seo:{title:"Référencement (SEO)",sub:"Balises titre, description et mots-clés"},
+  logs:{title:"Logs d'activité",sub:"Historique de toutes les actions admin"}
+};
+function qNav(name){ return document.querySelector('.sb-item[onclick*="\''+name+'\'"]'); }
+function toggleSidebar(force){
+  const open=document.body.classList.toggle('sb-open',force);
+  document.querySelector('.sb-toggle').setAttribute('aria-expanded',open);
+}
+function showPage(name,el){
+  toggleSidebar(false);
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(el) el.classList.add('active');
+  const cfg=pageCfg[name];
+  document.getElementById('page-title').textContent=cfg.title;
+  document.getElementById('page-subtitle').textContent=cfg.sub;
+  if(name==='agenda') renderAgenda();
+  if(name==='membres') renderMembres();
+  if(name==='galerie') renderGalerie();
+  if(name==='partenaires') renderPartenaires();
+  if(name==='historique') renderHistoire();
+  if(name==='candidatures') renderCandidatures();
+  if(name==='messages') renderMessages();
+  if(name==='dashboard') renderDashboard();
+  if(name==='presences') renderPresences();
+  if(name==='cotisations') renderCotisations();
+  if(name==='instruments') renderInstruments2();
+  if(name==='seo') initSeo();
+  if(name==='logs') renderLogs();
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderAll(){ renderDashboard(); updateBadges(); }
+
+function renderDashboard(){
+  document.getElementById('stat-concerts').textContent=concerts.length;
+  const nc=candidatures.filter(c=>c.status==='new').length;
+  const nm=messages.filter(m=>!m.read).length;
+  document.getElementById('stat-cand').textContent=nc;
+  document.getElementById('stat-msg').textContent=nm;
+  document.getElementById('qa-cand-sub').textContent=nc+' en attente';
+  document.getElementById('qa-msg-sub').textContent=nm+' non lus';
+
+  document.getElementById('dash-concerts').innerHTML=concerts.slice(0,3).map(c=>`
+    <div class="widget-item">
+      <div class="wi-icon terra">📅</div>
+      <div><div class="wi-label">${c.nom}</div><div class="wi-sub">${c.jour} ${c.mois} · ${c.lieu}</div></div>
+      <div class="wi-right">${c.tarif}</div>
+    </div>`).join('');
+
+  document.getElementById('dash-cands').innerHTML=candidatures.filter(c=>c.status==='new').slice(0,3).map(c=>`
+    <div class="widget-item">
+      <div class="wi-icon terra">👤</div>
+      <div><div class="wi-label">${c.prenom} ${c.nom}</div><div class="wi-sub">${c.instrument} · ${c.niveau}</div></div>
+      <div class="wi-right">${c.date}</div>
+    </div>`).join('')||'<div style="padding:1rem;text-align:center;color:var(--gray);font-size:.82rem;">Aucune candidature en attente</div>';
+
+  document.getElementById('dash-msgs').innerHTML=messages.slice(0,3).map(m=>`
+    <div class="widget-item">
+      <div class="wi-icon ${m.read?'brown':'terra'}">✉️</div>
+      <div><div class="wi-label">${m.prenom} ${m.nom} ${!m.read?'<span class="badge badge-terra" style="font-size:.6rem;">Nouveau</span>':''}</div><div class="wi-sub">${m.sujet}</div></div>
+      <div class="wi-right">${m.date}</div>
+    </div>`).join('');
+
+  const avatarBg={terra:'var(--terra-pale)',olive:'var(--olive-pale)',brown:'var(--beige)'};
+  const avatarCol={terra:'var(--terra)',olive:'var(--olive)',brown:'var(--brown)'};
+  document.getElementById('dash-bureau').innerHTML=membres.map(m=>`
+    <div class="widget-item">
+      <div class="wi-icon" style="background:${avatarBg[m.color]};color:${avatarCol[m.color]};font-size:.75rem;font-weight:800;">${m.initiales}</div>
+      <div><div class="wi-label">${m.prenom} ${m.nom}</div><div class="wi-sub">${m.role}</div></div>
+    </div>`).join('');
+}
+
+function renderAgenda(){
+  document.getElementById('upcoming-count').textContent=concerts.length+' concert(s)';
+  document.getElementById('concerts-tbody').innerHTML=concerts.map(c=>`
+    <tr>
+      <td><strong>${c.jour} ${c.mois}</strong></td>
+      <td>${c.nom}</td>
+      <td style="font-size:.8rem;">${c.lieu}</td>
+      <td>${c.heure}</td>
+      <td><span class="badge badge-terra">${c.tarif}</span></td>
+      <td>${c.tags.map(t=>`<span class="badge badge-olive">${t}</span>`).join(' ')}</td>
+      <td style="white-space:nowrap;">
+        <button class="btn-icon" onclick="editConcert(${c.id})" title="Modifier">✏️</button>
+        <button class="btn-icon del" onclick="deleteConcert(${c.id})" title="Supprimer">🗑️</button>
+      </td>
+    </tr>`).join('');
+  document.getElementById('past-concerts-tbody').innerHTML=pastConcerts.map(c=>`
+    <tr><td>${c.nom}</td><td>${c.date}</td>
+    <td><button class="btn-icon del" onclick="deletePastConcert(${c.id})">🗑️</button></td></tr>`).join('');
+}
+
+function renderMembres(){
+  const ab={terra:'var(--terra-pale)',olive:'var(--olive-pale)',brown:'var(--beige)'};
+  const ac={terra:'var(--terra)',olive:'var(--olive)',brown:'var(--brown)'};
+  document.getElementById('membres-tbody').innerHTML=membres.map(m=>`
+    <tr>
+      <td><div style="width:36px;height:36px;border-radius:50%;background:${ab[m.color]};color:${ac[m.color]};display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;">${m.initiales}</div></td>
+      <td><strong>${m.prenom} ${m.nom}</strong></td>
+      <td><span class="badge badge-brown">${m.role}</span></td>
+      <td style="white-space:nowrap;">
+        <button class="btn-icon" onclick="editMembre(${m.id})">✏️</button>
+        <button class="btn-icon del" onclick="deleteMembre(${m.id})">🗑️</button>
+      </td>
+    </tr>`).join('');
+  renderInstruments();
+}
+
+function renderInstruments(){
+  const wrap=document.getElementById('instruments-wrap');
+  const input=document.getElementById('instrument-input');
+  wrap.innerHTML='';
+  instruments.forEach((inst,i)=>{
+    const tag=document.createElement('div');
+    tag.className='tag-item';
+    tag.innerHTML=`${inst} <button onclick="removeInstrument(${i})">×</button>`;
+    wrap.appendChild(tag);
+  });
+  wrap.appendChild(input);
+}
+function addInstrument(e){
+  if(e.key==='Enter'&&e.target.value.trim()){
+    instruments.push(e.target.value.trim());
+    e.target.value='';
+    renderInstruments();
+    showToast('Instrument ajouté !','success');
+  }
+}
+function removeInstrument(i){ instruments.splice(i,1); renderInstruments(); }
+
+function renderCandidatures(){
+  const filtered=currentFilter==='all'?candidatures:candidatures.filter(c=>c.status===currentFilter);
+  const sl={new:"En attente",accepted:"Accepté",refused:"Refusé"};
+  const sb={new:"badge-terra",accepted:"badge-olive",refused:"badge-danger"};
+  document.getElementById('cand-grid').innerHTML=filtered.map(c=>`
+    <div class="cand-card ${c.status}">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.5rem;">
+        <div><div class="cand-name">${c.prenom} ${c.nom}</div><div class="cand-date">${c.date}</div></div>
+        <span class="badge ${sb[c.status]}">${sl[c.status]}</span>
+      </div>
+      <div class="cand-info">
+        <strong>${c.instrument}</strong> · ${c.niveau}<br>
+        📧 ${c.email} · 📞 ${c.tel}
+        ${c.message?`<br><em>"${c.message.substring(0,80)}${c.message.length>80?'…':''}"</em>`:''}
+      </div>
+      <div class="cand-actions">
+        ${c.status!=='accepted'?`<button class="btn btn-green btn-sm" onclick="setCandStatus(${c.id},'accepted')">✓ Accepter</button>`:''}
+        ${c.status!=='refused'?`<button class="btn btn-danger btn-sm" onclick="setCandStatus(${c.id},'refused')">✕ Refuser</button>`:''}
+        ${c.status!=='new'?`<button class="btn btn-outline btn-sm" onclick="setCandStatus(${c.id},'new')">↩ En attente</button>`:''}
+      </div>
+    </div>`).join('')||'<div class="empty-state" style="grid-column:span 2"><div class="icon">📭</div><p>Aucune candidature dans cette catégorie</p></div>';
+}
+function filterCandidatures(v){ currentFilter=v; renderCandidatures(); }
+function setCandStatus(id,status){
+  const c=candidatures.find(x=>x.id===id);
+  if(c){
+    c.status=status; renderCandidatures(); updateBadges(); renderDashboard();
+    const sl={new:'remise en attente',accepted:'acceptée',refused:'refusée'};
+    logActivity('status','Candidature '+sl[status], c.prenom+' '+c.nom+' — '+c.instrument);
+    showToast('Candidature mise à jour !','success');
+  }
+}
+
+function renderMessages(){
+  document.getElementById('messages-list').innerHTML=messages.map(m=>`
+    <div class="msg-card ${m.read?'':'unread'}" onclick="markRead(${m.id})">
+      <div class="msg-avatar">${m.prenom[0]}${m.nom[0]}</div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:baseline;gap:.5rem;margin-bottom:.2rem;">
+          <span class="msg-from">${m.prenom} ${m.nom}</span>
+          ${!m.read?'<span class="badge badge-terra" style="font-size:.65rem;">Nouveau</span>':''}
+          <span class="msg-subject">· ${m.sujet}</span>
+        </div>
+        <div class="msg-text">${m.message}</div>
+        <div class="msg-meta">📧 ${m.email} · ${m.date}</div>
+      </div>
+      <button class="btn-icon del" onclick="deleteMessage(${m.id});event.stopPropagation()" style="flex-shrink:0;">🗑️</button>
+    </div>`).join('')||'<div class="empty-state"><div class="icon">📭</div><p>Aucun message</p></div>';
+}
+function markRead(id){ const m=messages.find(x=>x.id===id); if(m){m.read=true; renderMessages(); updateBadges(); renderDashboard();} }
+function markAllRead(){ messages.forEach(m=>m.read=true); renderMessages(); updateBadges(); renderDashboard(); showToast('Tout marqué comme lu','success'); }
+function deleteMessage(id){ messages=messages.filter(m=>m.id!==id); renderMessages(); updateBadges(); renderDashboard(); showToast('Message supprimé','success'); }
+
+function renderGalerie(){
+  const bgs=["linear-gradient(135deg,#c1440e,#7a1f00)","linear-gradient(135deg,#5c7a29,#2d4010)","linear-gradient(135deg,#4a2c0a,#2a1205)","linear-gradient(135deg,#8b6914,#5c4005)","linear-gradient(135deg,#e05520,#c1440e)","linear-gradient(135deg,#3a6ea5,#1a3a5c)"];
+  const te={photo:'📷',video:'🎬',audio:'🎵',interview:'🎙️'};
+  document.getElementById('gal-grid').innerHTML=galerie.map((g,i)=>`
+    <div class="admin-gal-item">
+      <div class="admin-gal-ph" style="background:${bgs[i%bgs.length]};"><span style="font-size:2.5rem;">${te[g.type]||'📷'}</span></div>
+      <div class="overlay"><button class="btn btn-outline btn-sm" onclick="deleteGalItem(${g.id})">🗑️ Suppr.</button></div>
+      <div class="admin-gal-caption">${g.titre}</div>
+    </div>`).join('');
+  const tl={video:'🎬 Vidéo',audio:'🎵 Audio',interview:'🎙️ Interview'};
+  document.getElementById('medias-tbody').innerHTML=medias.map(m=>`
+    <tr><td>${tl[m.type]||m.type}</td><td>${m.titre}</td><td style="font-size:.8rem;">${m.meta}</td>
+    <td><button class="btn-icon del" onclick="deleteMedia(${m.id})">🗑️</button></td></tr>`).join('');
+}
+function deleteGalItem(id){ if(!confirm('Supprimer ?')) return; galerie=galerie.filter(g=>g.id!==id); renderGalerie(); showToast('Supprimé','success'); }
+function deleteMedia(id){ medias=medias.filter(m=>m.id!==id); renderGalerie(); showToast('Média supprimé','success'); }
+
+function renderPartenaires(){
+  document.getElementById('partners-grid').innerHTML=partenaires.map(p=>`
+    <div class="admin-partner-card">
+      <div class="pt-icon">${p.icon}</div>
+      <div style="flex:1;min-width:0;"><div class="pt-name">${p.nom}</div><div class="pt-type">${p.type}</div></div>
+      <div class="pt-actions"><button class="btn-icon del" onclick="deletePartner(${p.id})">🗑️</button></div>
+    </div>`).join('');
+}
+function deletePartner(id){ if(!confirm('Supprimer ce partenaire ?')) return; partenaires=partenaires.filter(p=>p.id!==id); renderPartenaires(); showToast('Partenaire supprimé','success'); }
+
+function renderHistoire(){
+  document.getElementById('histoire-tbody').innerHTML=histoire.map(h=>`
+    <tr>
+      <td><span class="badge badge-terra">${h.annee}</span></td>
+      <td><strong>${h.titre}</strong></td>
+      <td style="font-size:.82rem;color:var(--gray);">${h.desc.substring(0,70)}…</td>
+      <td><button class="btn-icon del" onclick="deleteHistoire(${h.id})">🗑️</button></td>
+    </tr>`).join('');
+  document.getElementById('valeurs-grid').innerHTML=valeurs.map(v=>`
+    <div style="background:white;border-radius:14px;padding:1rem;box-shadow:0 2px 10px rgba(74,44,10,.06);display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:.7rem;"><span style="font-size:1.8rem;">${v.icon}</span><span style="font-weight:700;font-size:.85rem;color:var(--brown);">${v.label}</span></div>
+      <button class="btn-icon del" onclick="deleteValeur(${v.id})">🗑️</button>
+    </div>`).join('');
+}
+function deleteHistoire(id){ histoire=histoire.filter(h=>h.id!==id); renderHistoire(); showToast('Supprimé','success'); }
+function deleteValeur(id){ valeurs=valeurs.filter(v=>v.id!==id); renderHistoire(); }
+
+// ── BADGES ────────────────────────────────────────────────────────────────────
+function updateBadges(){
+  const nc=candidatures.filter(c=>c.status==='new').length;
+  const nm=messages.filter(m=>!m.read).length;
+  const nimp=cotisations.filter(c=>c.statut==='impaye').length;
+  // absents = membres avec taux < 60%
+  const nabs=membres.filter(m=>{
+    if(!repetitions.length) return false;
+    const pct=repetitions.filter(r=>r.presences.includes(m.id)).length/repetitions.length;
+    return pct<0.6;
+  }).length;
+  const bc=document.getElementById('sb-badge-cand');
+  const bm=document.getElementById('sb-badge-msg');
+  const ba=document.getElementById('sb-badge-abs');
+  const bcot=document.getElementById('sb-badge-cot');
+  bc.textContent=nc; bc.style.display=nc?'inline':'none';
+  bm.textContent=nm; bm.style.display=nm?'inline':'none';
+  ba.textContent=nabs; ba.style.display=nabs?'inline':'none';
+  bcot.textContent=nimp; bcot.style.display=nimp?'inline':'none';
+}
+
+// ── MODALS ────────────────────────────────────────────────────────────────────
+function openModal(id){ document.getElementById(id).classList.add('open'); editingId=null; }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); editingId=null; }
+document.addEventListener('click',e=>{ if(e.target.classList.contains('modal-overlay')) closeModal(e.target.id); });
+
+// ── CONCERTS ──────────────────────────────────────────────────────────────────
+function openConcertModal(){
+  document.getElementById('concert-modal-title').textContent='Nouveau concert';
+  ['c-nom','c-jour','c-mois','c-lieu','c-heure','c-tarif','c-desc','c-tags'].forEach(id=>document.getElementById(id).value='');
+  openModal('concert-modal');
+}
+function editConcert(id){
+  const c=concerts.find(x=>x.id===id);
+  document.getElementById('c-nom').value=c.nom; document.getElementById('c-jour').value=c.jour;
+  document.getElementById('c-mois').value=c.mois; document.getElementById('c-lieu').value=c.lieu;
+  document.getElementById('c-heure').value=c.heure; document.getElementById('c-tarif').value=c.tarif;
+  document.getElementById('c-color').value=c.color; document.getElementById('c-desc').value=c.desc;
+  document.getElementById('c-tags').value=c.tags.join(', ');
+  document.getElementById('concert-modal-title').textContent='Modifier le concert';
+  document.getElementById('concert-modal').classList.add('open');
+  editingId=id;
+}
+function saveConcert(){
+  const nom=document.getElementById('c-nom').value.trim();
+  if(!nom){showToast('Le nom est requis','error'); return;}
+  const obj={
+    id:editingId||Date.now(), nom, jour:document.getElementById('c-jour').value,
+    mois:document.getElementById('c-mois').value, lieu:document.getElementById('c-lieu').value,
+    heure:document.getElementById('c-heure').value, tarif:document.getElementById('c-tarif').value,
+    color:document.getElementById('c-color').value, desc:document.getElementById('c-desc').value,
+    tags:document.getElementById('c-tags').value.split(',').map(t=>t.trim()).filter(Boolean)
+  };
+  if(editingId){const i=concerts.findIndex(x=>x.id===editingId); concerts[i]=obj;}
+  else concerts.push(obj);
+  closeModal('concert-modal'); renderAgenda(); renderDashboard(); updateBadges();
+  logActivity(editingId?'edit':'add', editingId?'Concert modifié':'Concert ajouté', obj.nom);
+  showToast(editingId?'Concert modifié !':'Concert ajouté !','success');
+}
+function deleteConcert(id){
+  if(!confirm('Supprimer ce concert ?')) return;
+  const c=concerts.find(x=>x.id===id);
+  concerts=concerts.filter(c=>c.id!==id); renderAgenda(); renderDashboard();
+  logActivity('delete','Concert supprimé',c?c.nom:'');
+  showToast('Concert supprimé','success');
+}
+function savePastConcert(){
+  const nom=document.getElementById('pc-nom').value.trim();
+  if(!nom){showToast('Le nom est requis','error'); return;}
+  pastConcerts.push({id:Date.now(),nom,date:document.getElementById('pc-date').value.trim()});
+  closeModal('past-concert-modal'); renderAgenda(); showToast('Concert passé ajouté !','success');
+  document.getElementById('pc-nom').value=''; document.getElementById('pc-date').value='';
+}
+function deletePastConcert(id){ pastConcerts=pastConcerts.filter(c=>c.id!==id); renderAgenda(); showToast('Supprimé','success'); }
+
+// ── MEMBRES ───────────────────────────────────────────────────────────────────
+function selectColor(el){
+  document.querySelectorAll('.color-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected'); selectedColor=el.dataset.color;
+}
+function openMembreModal(){
+  document.getElementById('membre-modal-title').textContent='Nouveau membre du bureau';
+  ['m-prenom','m-nom','m-role','m-initiales'].forEach(id=>document.getElementById(id).value='');
+  selectedColor='terra'; document.querySelectorAll('.color-opt').forEach((o,i)=>o.classList.toggle('selected',i===0));
+  openModal('membre-modal');
+}
+function editMembre(id){
+  const m=membres.find(x=>x.id===id);
+  document.getElementById('m-prenom').value=m.prenom; document.getElementById('m-nom').value=m.nom;
+  document.getElementById('m-role').value=m.role; document.getElementById('m-initiales').value=m.initiales;
+  selectedColor=m.color; document.querySelectorAll('.color-opt').forEach(o=>o.classList.toggle('selected',o.dataset.color===m.color));
+  document.getElementById('membre-modal-title').textContent='Modifier le membre';
+  document.getElementById('membre-modal').classList.add('open'); editingId=id;
+}
+function saveMembre(){
+  const prenom=document.getElementById('m-prenom').value.trim();
+  const nom=document.getElementById('m-nom').value.trim();
+  if(!prenom||!nom){showToast('Prénom et nom requis','error'); return;}
+  const init=document.getElementById('m-initiales').value.trim()||(prenom[0]+nom[0]).toUpperCase();
+  const obj={id:editingId||Date.now(),prenom,nom,role:document.getElementById('m-role').value.trim(),initiales:init,color:selectedColor};
+  if(editingId){const i=membres.findIndex(x=>x.id===editingId); membres[i]=obj;}
+  else membres.push(obj);
+  closeModal('membre-modal'); renderMembres(); renderDashboard();
+  logActivity(editingId?'edit':'add', editingId?'Membre modifié':'Membre ajouté', obj.prenom+' '+obj.nom+' — '+obj.role);
+  showToast(editingId?'Membre modifié !':'Membre ajouté !','success');
+}
+function deleteMembre(id){ if(!confirm('Supprimer ce membre ?')) return; membres=membres.filter(m=>m.id!==id); renderMembres(); renderDashboard(); showToast('Membre supprimé','success'); }
+
+// ── MÉDIAS ────────────────────────────────────────────────────────────────────
+function saveMedia(){
+  const titre=document.getElementById('med-titre').value.trim();
+  if(!titre){showToast('Le titre est requis','error'); return;}
+  const type=document.getElementById('med-type').value;
+  const meta=document.getElementById('med-meta').value.trim();
+  if(type==='photo') galerie.push({id:Date.now(),type,titre,bg:"linear-gradient(135deg,#3a6ea5,#1a3a5c)"});
+  else medias.push({id:Date.now(),type,titre,meta});
+  closeModal('media-modal'); renderGalerie(); showToast('Média ajouté !','success');
+  document.getElementById('med-titre').value=''; document.getElementById('med-meta').value='';
+}
+
+// ── PARTENAIRES ───────────────────────────────────────────────────────────────
+function savePartner(){
+  const nom=document.getElementById('p-nom').value.trim();
+  if(!nom){showToast('Le nom est requis','error'); return;}
+  partenaires.push({id:Date.now(),nom,type:document.getElementById('p-type').value.trim(),icon:document.getElementById('p-icon').value||'🏢'});
+  closeModal('partner-modal'); renderPartenaires(); showToast('Partenaire ajouté !','success');
+  ['p-nom','p-type','p-icon'].forEach(id=>document.getElementById(id).value='');
+}
+
+// ── HISTOIRE ──────────────────────────────────────────────────────────────────
+function saveHistoire(){
+  const annee=document.getElementById('h-annee').value.trim();
+  const titre=document.getElementById('h-titre').value.trim();
+  if(!annee||!titre){showToast('Année et titre requis','error'); return;}
+  histoire.push({id:Date.now(),annee,titre,desc:document.getElementById('h-desc').value.trim()});
+  closeModal('histoire-modal'); renderHistoire(); showToast('Jalon ajouté !','success');
+  ['h-annee','h-titre','h-desc'].forEach(id=>document.getElementById(id).value='');
+}
+function saveValeur(){
+  const label=document.getElementById('v-label').value.trim();
+  if(!label){showToast('Le label est requis','error'); return;}
+  valeurs.push({id:Date.now(),icon:document.getElementById('v-icon').value||'⭐',label});
+  closeModal('valeur-modal'); renderHistoire(); showToast('Valeur ajoutée !','success');
+  document.getElementById('v-icon').value=''; document.getElementById('v-label').value='';
+}
+
+// ── PARAMÈTRES ────────────────────────────────────────────────────────────────
+function saveSettings(){
+  const pwd=document.getElementById('set-pwd').value;
+  const pwd2=document.getElementById('set-pwd2').value;
+  if(pwd&&pwd!==pwd2){showToast('Les mots de passe ne correspondent pas','error'); return;}
+  showToast('Paramètres enregistrés !','success');
+  document.getElementById('set-pwd').value=''; document.getElementById('set-pwd2').value='';
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function now(){
+  const d=new Date();
+  return d.toLocaleDateString('fr-FR')+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+}
+function logActivity(type,action,detail){
+  logs.unshift({id:Date.now(),type,action,detail,time:now()});
+}
+
+// ── PRÉSENCES ─────────────────────────────────────────────────────────────────
+function renderPresences(){
+  document.getElementById('rep-count-badge').textContent=repetitions.length+' répétition(s)';
+  // Header: Membre | rep1 | rep2 | … | Taux
+  const thead=document.getElementById('presence-thead');
+  const tbody=document.getElementById('presence-tbody');
+  const reps=repetitions.slice().reverse(); // plus récent à droite
+  thead.innerHTML='<tr><th style="text-align:left;min-width:150px;">Musicien</th>'+
+    reps.map(r=>`<th style="text-align:center;font-size:.72rem;white-space:nowrap;">${r.label}</th>`).join('')+
+    '<th style="text-align:center;">Taux</th>'+
+    '<th></th></tr>';
+
+  tbody.innerHTML=membres.map(m=>{
+    const total=repetitions.length;
+    const present=repetitions.filter(r=>r.presences.includes(m.id)).length;
+    const pct=total?Math.round(present/total*100):0;
+    const cls=pct>=80?'pct-ok':pct>=60?'pct-warn':'pct-danger';
+    const fillCls=pct>=80?'':pct>=60?'warn':'danger';
+    return `<tr>
+      <td><strong>${m.prenom} ${m.nom}</strong><div style="font-size:.75rem;color:var(--gray);">${m.role}</div></td>
+      ${reps.map(r=>`<td style="text-align:center;">
+        <button class="check-btn ${r.presences.includes(m.id)?'present':''}"
+          onclick="togglePresence(${r.id},${m.id},this)">${r.presences.includes(m.id)?'✓':''}</button>
+      </td>`).join('')}
+      <td style="text-align:center;min-width:80px;">
+        <span class="${cls}">${pct}%</span>
+        <div class="presence-bar"><div class="presence-fill ${fillCls}" style="width:${pct}%"></div></div>
+      </td>
+      <td><button class="btn-icon del" onclick="deleteRepetitionCol(${m.id})" title="Retirer ce membre" style="opacity:0;">🗑️</button></td>
+    </tr>`;
+  }).join('');
+
+  // Stats card
+  const stats=document.getElementById('presence-stats');
+  stats.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">'+
+    membres.map(m=>{
+      const total=repetitions.length;
+      const present=repetitions.filter(r=>r.presences.includes(m.id)).length;
+      const pct=total?Math.round(present/total*100):0;
+      const cls=pct>=80?'pct-ok':pct>=60?'pct-warn':'pct-danger';
+      const fillCls=pct>=80?'':pct>=60?'warn':'danger';
+      const alert=pct<60?'<span class="badge badge-danger" style="font-size:.62rem;margin-left:.4rem;">⚠️ Absent+</span>':'';
+      return `<div style="background:white;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(74,44,10,.07);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">
+          <strong style="font-size:.85rem;color:var(--brown);">${m.prenom} ${m.nom}</strong>${alert}
+        </div>
+        <div style="font-size:.75rem;color:var(--gray);margin-bottom:.4rem;">${present} / ${total} répétitions</div>
+        <div class="presence-bar"><div class="presence-fill ${fillCls}" style="width:${pct}%"></div></div>
+        <span class="${cls}" style="margin-top:.3rem;display:block;">${pct}%</span>
+      </div>`;
+    }).join('')+'</div>';
+}
+
+function togglePresence(repId,membreId,btn){
+  const rep=repetitions.find(r=>r.id===repId);
+  if(!rep) return;
+  const idx=rep.presences.indexOf(membreId);
+  if(idx>-1){ rep.presences.splice(idx,1); btn.classList.remove('present'); btn.textContent=''; }
+  else { rep.presences.push(membreId); btn.classList.add('present'); btn.textContent='✓'; }
+  renderPresences(); updateBadges();
+}
+
+function saveRepetition(){
+  const d=document.getElementById('rep-date').value;
+  if(!d){ showToast('Sélectionnez une date','error'); return; }
+  const parts=d.split('-');
+  const label=new Date(d).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  repetitions.push({id:Date.now(),date:d,label,presences:[]});
+  repetitions.sort((a,b)=>a.date.localeCompare(b.date));
+  closeModal('rep-modal');
+  renderPresences(); updateBadges();
+  logActivity('add','Répétition ajoutée',label);
+  showToast('Répétition ajoutée !','success');
+  document.getElementById('rep-date').value='';
+}
+
+// ── COTISATIONS ───────────────────────────────────────────────────────────────
+function renderCotisations(){
+  const filter=document.getElementById('cot-filter').value;
+  const total=cotisations.reduce((s,c)=>s+c.montant,0);
+  const paye=cotisations.filter(c=>c.statut==='paye').reduce((s,c)=>s+c.montant,0);
+  const impaye=cotisations.filter(c=>c.statut==='impaye').length;
+  const taux=total?Math.round(paye/total*100):0;
+  document.getElementById('cot-stats-row').innerHTML=`
+    <div class="cot-stat"><div class="cot-stat-val">${paye} €</div><div class="cot-stat-label">Total encaissé</div></div>
+    <div class="cot-stat"><div class="cot-stat-val">${total} €</div><div class="cot-stat-label">Total attendu</div></div>
+    <div class="cot-stat"><div class="cot-stat-val" style="color:${impaye?'var(--danger)':'var(--olive)'}">${impaye}</div><div class="cot-stat-label">Impayé(s)</div></div>`;
+
+  const list=filter==='all'?cotisations:cotisations.filter(c=>c.statut===filter);
+  document.getElementById('cot-tbody').innerHTML=list.map(c=>{
+    const m=membres.find(x=>x.id===c.membreId)||{prenom:'?',nom:'?',role:'?'};
+    const ab={terra:'var(--terra-pale)',olive:'var(--olive-pale)',brown:'var(--beige)'};
+    const ac={terra:'var(--terra)',olive:'var(--olive)',brown:'var(--brown)'};
+    const avatarStyle=`width:32px;height:32px;border-radius:50%;background:${ab[m.color]};color:${ac[m.color]};display:inline-flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;margin-right:.5rem;`;
+    return `<tr>
+      <td><span style="${avatarStyle}">${m.initiales||'?'}</span><strong>${m.prenom} ${m.nom}</strong></td>
+      <td style="font-size:.8rem;color:var(--gray);">${m.role}</td>
+      <td><strong>${c.montant} €</strong></td>
+      <td><span class="${c.statut==='paye'?'status-paye':'status-impaye'}">${c.statut==='paye'?'✓ Payé':'✕ Impayé'}</span></td>
+      <td style="font-size:.82rem;">${c.datePaiement||'—'}</td>
+      <td style="font-size:.82rem;">${c.mode||'—'}</td>
+      <td style="white-space:nowrap;">
+        ${c.statut==='impaye'?`<button class="btn btn-green btn-sm" onclick="openCotModal(${c.id})">💳 Enregistrer</button>`:''}
+        ${c.statut==='paye'?`<button class="btn btn-danger btn-sm" onclick="annulerCot(${c.id})">↩ Annuler</button>`:''}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openCotModal(id){
+  cotEditingId=id;
+  document.getElementById('cot-modal-title').textContent='Enregistrer le paiement';
+  document.getElementById('cot-date').value=new Date().toISOString().split('T')[0];
+  const c=cotisations.find(x=>x.id===id);
+  if(c) document.getElementById('cot-montant').value=c.montant;
+  openModal('cotisation-modal');
+  cotEditingId=id;
+}
+function saveCotisation(){
+  const c=cotisations.find(x=>x.id===cotEditingId);
+  if(!c) return;
+  const d=document.getElementById('cot-date').value;
+  const label=d?new Date(d).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):now().split(' ')[0];
+  c.statut='paye';
+  c.montant=parseInt(document.getElementById('cot-montant').value)||c.montant;
+  c.datePaiement=label;
+  c.mode=document.getElementById('cot-mode').value;
+  closeModal('cotisation-modal');
+  renderCotisations(); updateBadges(); renderDashboard();
+  const m=membres.find(x=>x.id===c.membreId)||{prenom:'?',nom:'?'};
+  logActivity('status','Cotisation payée',`${m.prenom} ${m.nom} — ${c.montant} € (${c.mode})`);
+  showToast('Paiement enregistré !','success');
+}
+function annulerCot(id){
+  const c=cotisations.find(x=>x.id===id);
+  if(c){ c.statut='impaye'; c.datePaiement=null; c.mode=null; }
+  renderCotisations(); updateBadges();
+  logActivity('edit','Cotisation annulée','Retour au statut impayé');
+  showToast('Paiement annulé','success');
+}
+
+// ── INSTRUMENTS ───────────────────────────────────────────────────────────────
+function switchInstTab(name,btn){
+  document.querySelectorAll('.inst-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.inst-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('inst-panel-'+name).classList.add('active');
+}
+
+function renderInstruments2(){
+  document.getElementById('inst-count-badge').textContent=instrumentsAsso.length+' instrument(s)';
+  const etatHtml={bon:'<span class="etat-bon">Bon état</span>',moyen:'<span class="etat-moyen">Moyen</span>',mauvais:'<span class="etat-mauvais">Mauvais</span>'};
+  const statutHtml={disponible:'<span class="statut-dispo">Disponible</span>',prete:'<span class="statut-prete">Prêté</span>',reparation:'<span class="statut-rep">Réparation</span>'};
+  document.getElementById('inst-tbody').innerHTML=instrumentsAsso.map(i=>{
+    const m=membres.find(x=>x.id===i.preteA);
+    return `<tr>
+      <td><strong>${i.nom}</strong></td>
+      <td style="font-size:.78rem;color:var(--gray);font-family:monospace;">${i.serie}</td>
+      <td>${etatHtml[i.etat]||i.etat}</td>
+      <td>${statutHtml[i.statut]||i.statut}</td>
+      <td style="font-size:.82rem;">${m?m.prenom+' '+m.nom:'—'}</td>
+      <td style="font-size:.82rem;">${i.depuis||'—'}</td>
+      <td style="white-space:nowrap;">
+        ${i.statut==='prete'?`<button class="btn btn-outline btn-sm" onclick="retournerInst(${i.id})">↩ Retour</button>`:''}
+        <button class="btn-icon del" onclick="deleteInstrument(${i.id})">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="7"><div class="empty-state"><div class="icon">🎺</div><p>Aucun instrument</p></div></td></tr>';
+
+  const prets=instrumentsAsso.filter(i=>i.statut==='prete');
+  document.getElementById('prets-tbody').innerHTML=prets.map(i=>{
+    const m=membres.find(x=>x.id===i.preteA);
+    return `<tr>
+      <td><strong>${i.nom}</strong></td>
+      <td>${m?m.prenom+' '+m.nom:'—'}</td>
+      <td style="font-size:.82rem;">${i.depuis||'—'}</td>
+      <td><button class="btn btn-green btn-sm" onclick="retournerInst(${i.id})">↩ Retour</button></td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="4"><div class="empty-state"><div class="icon">✅</div><p>Aucun prêt en cours</p></div></td></tr>';
+
+  // Remplir les selects dans la modale de prêt
+  const si=document.getElementById('pret-inst-id');
+  if(si){ si.innerHTML=instrumentsAsso.filter(i=>i.statut==='disponible').map(i=>`<option value="${i.id}">${i.nom}</option>`).join(''); }
+  const sm=document.getElementById('pret-membre-id');
+  if(sm){ sm.innerHTML=membres.map(m=>`<option value="${m.id}">${m.prenom} ${m.nom}</option>`).join(''); }
+}
+
+function saveInstrument(){
+  const nom=document.getElementById('inst-nom').value.trim();
+  if(!nom){ showToast('Le nom est requis','error'); return; }
+  instrumentsAsso.push({id:Date.now(),nom,serie:document.getElementById('inst-serie').value.trim(),etat:document.getElementById('inst-etat').value,statut:document.getElementById('inst-statut').value,preteA:null,depuis:null});
+  closeModal('instrument-modal'); renderInstruments2();
+  logActivity('add','Instrument ajouté',nom);
+  showToast('Instrument ajouté !','success');
+  document.getElementById('inst-nom').value=''; document.getElementById('inst-serie').value='';
+}
+
+function savePret(){
+  const instId=parseInt(document.getElementById('pret-inst-id').value);
+  const memId=parseInt(document.getElementById('pret-membre-id').value);
+  const d=document.getElementById('pret-date').value;
+  const inst=instrumentsAsso.find(i=>i.id===instId);
+  if(!inst){ showToast('Instrument introuvable','error'); return; }
+  const label=d?new Date(d).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}):now().split(' ')[0];
+  inst.statut='prete'; inst.preteA=memId; inst.depuis=label;
+  closeModal('pret-modal'); renderInstruments2();
+  const m=membres.find(x=>x.id===memId)||{prenom:'?',nom:'?'};
+  logActivity('add','Prêt enregistré',`${inst.nom} → ${m.prenom} ${m.nom}`);
+  showToast('Prêt enregistré !','success');
+}
+
+function retournerInst(id){
+  const inst=instrumentsAsso.find(i=>i.id===id);
+  if(!inst) return;
+  const m=membres.find(x=>x.id===inst.preteA)||{prenom:'?',nom:'?'};
+  inst.statut='disponible'; inst.preteA=null; inst.depuis=null;
+  renderInstruments2();
+  logActivity('status','Instrument retourné',`${inst.nom} — retour de ${m.prenom} ${m.nom}`);
+  showToast('Instrument retourné !','success');
+}
+
+function deleteInstrument(id){
+  if(!confirm('Supprimer cet instrument ?')) return;
+  const inst=instrumentsAsso.find(i=>i.id===id);
+  instrumentsAsso=instrumentsAsso.filter(i=>i.id!==id);
+  renderInstruments2();
+  logActivity('delete','Instrument supprimé',inst?inst.nom:'');
+  showToast('Instrument supprimé','success');
+}
+
+// ── SEO ───────────────────────────────────────────────────────────────────────
+function initSeo(){ updateSeoPreview(); updateCharCount('seo-title','seo-title-count',60); updateCharCount('seo-desc','seo-desc-count',160); }
+function updateSeoPreview(){
+  document.getElementById('seo-preview-title').textContent=document.getElementById('seo-title').value||'Titre de la page';
+  document.getElementById('seo-preview-desc').textContent=document.getElementById('seo-desc').value||'Description…';
+}
+function updateCharCount(inputId,countId,max){
+  const el=document.getElementById(inputId);
+  const cnt=document.getElementById(countId);
+  if(!el||!cnt) return;
+  const len=el.value.length;
+  cnt.textContent=len+' / '+max+' caractères';
+  cnt.className='char-count '+(len<=max?'char-ok':'char-warn');
+}
+function saveSeo(){
+  logActivity('edit','SEO mis à jour','Titre, description et mots-clés');
+  showToast('SEO enregistré !','success');
+}
+
+// ── LOGS ─────────────────────────────────────────────────────────────────────
+const logEmoji={add:'➕',edit:'✏️',delete:'🗑️',auth:'🔐',status:'🔄'};
+function renderLogs(){
+  const filtered=logFilter==='all'?logs:logs.filter(l=>l.type===logFilter);
+  const list=document.getElementById('logs-list');
+  list.innerHTML=filtered.map(l=>`
+    <div class="log-item">
+      <div class="log-icon ${l.type}">${logEmoji[l.type]||'•'}</div>
+      <div style="flex:1;">
+        <div class="log-action">${l.action}</div>
+        <div class="log-detail">${l.detail}</div>
+      </div>
+      <div class="log-time">${l.time}</div>
+    </div>`).join('')||'<div class="empty-state"><div class="icon">📋</div><p>Aucun log dans cette catégorie</p></div>';
+}
+function filterLogs(type,btn){
+  logFilter=type;
+  document.querySelectorAll('.log-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLogs();
+}
+function clearLogs(){
+  if(!confirm('Vider tous les logs ?')) return;
+  logs=[];
+  renderLogs();
+  showToast('Logs vidés','success');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+type; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+<script>
+// Rend les div/span cliquables (statiques et générés) utilisables au clavier.
+(function(){
+  function fix(root){
+    root.querySelectorAll('[onclick]:not(button):not(a):not(input):not(select):not(textarea):not(.sb-backdrop):not([tabindex])').forEach(function(el){
+      el.setAttribute('role','button'); el.setAttribute('tabindex','0');
+      if(!el.textContent.trim() && el.dataset.color) el.setAttribute('aria-label','Couleur '+el.dataset.color);
+    });
+  }
+  fix(document);
+  new MutationObserver(function(){ fix(document); }).observe(document.body,{childList:true,subtree:true});
+  document.addEventListener('keydown',function(e){
+    var el=e.target;
+    if((e.key==='Enter'||e.key===' ') && el.getAttribute && el.getAttribute('role')==='button' && el.tagName!=='BUTTON'){ e.preventDefault(); el.click(); }
+    if(e.key==='Escape' && document.body.classList.contains('sb-open')) toggleSidebar(false);
+  });
+})();
+</script>
+</body>
+</html>

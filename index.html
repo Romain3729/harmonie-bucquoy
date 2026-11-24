@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonie de Bucquoy · Maquettes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+  /* Layout: barre d'outils fixe en haut, aperçu du site dans le reste de l'écran */
+  :root {
+    --bg: #eeece8; --panel: #fbfaf8; --fg: #1f1c19; --muted: #6b645c; --line: #d9d4cc;
+    --accent: #8a5a12; --accent-fg: #ffffff; --stage: #d7d2ca;
+    --f-display: 'Space Grotesk', system-ui, sans-serif; --f-body: 'Inter', system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #171513; --panel: #211e1b; --fg: #efebe5; --muted: #a59d93; --line: #39342e;
+    --accent: #e0a94a; --accent-fg: #1b1408; --stage: #0f0e0d; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #171513; --panel: #211e1b; --fg: #efebe5; --muted: #a59d93; --line: #39342e;
+    --accent: #e0a94a; --accent-fg: #1b1408; --stage: #0f0e0d; color-scheme: dark }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--f-body); display: flex; flex-direction: column; overflow: hidden; }
+  header {
+    background: var(--panel); border-bottom: 1px solid var(--line);
+    padding-block: .7rem;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: flex; flex-direction: column; gap: .6rem;
+  }
+  .top { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  h1 { font-family: var(--f-display); font-size: 1.05rem; margin: 0; font-weight: 700; text-wrap: balance; }
+  h1 span { color: var(--muted); font-weight: 500; }
+  .tools { margin-left: auto; display: flex; gap: .5rem; align-items: center; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .seg button { font: 500 .8rem var(--f-body); padding: .4rem .75rem; background: transparent; color: var(--fg); border: 0; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--fg); color: var(--panel); }
+  .open { font: 500 .8rem var(--f-body); color: var(--accent); text-decoration: none; padding: .4rem .2rem; white-space: nowrap; }
+  .open:hover { text-decoration: underline; }
+  nav { display: flex; gap: .4rem; overflow-x: auto; scrollbar-width: thin; padding-bottom: 2px; }
+  nav button {
+    flex: none; font: 500 .82rem var(--f-body); color: var(--fg); background: transparent;
+    border: 1px solid var(--line); border-radius: 999px; padding: .38rem .85rem; cursor: pointer; white-space: nowrap;
+  }
+  nav button:hover { border-color: var(--muted); }
+  nav button[aria-current="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  nav .sep { flex: none; width: 1px; background: var(--line); margin: .2rem .2rem; }
+  .desc { font-size: .8rem; color: var(--muted); margin: 0; min-height: 1.2em; }
+  main { flex: 1; min-height: 0; background: var(--stage); display: flex; justify-content: center; overflow: auto;
+    padding-bottom: env(safe-area-inset-bottom, 0px); }
+  iframe { border: 0; background: #fff; width: 100%; height: 100%; display: block; }
+  main.mobile { padding-block: 1rem; }
+  main.mobile iframe { width: 390px; max-width: 100%; height: min(844px, 100%); border-radius: 22px; box-shadow: 0 0 0 8px var(--fg), 0 18px 40px rgba(0,0,0,.3); }
+  button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media (max-width: 640px) { .seg { display: none; } h1 span { display: none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="top">
+    <h1>L'Harmonie de Bucquoy <span>· propositions de site</span></h1>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="Taille de l'aperçu">
+        <button type="button" id="v-desk" aria-pressed="true">Ordinateur</button>
+        <button type="button" id="v-mob" aria-pressed="false">Téléphone</button>
+      </div>
+      <a class="open" id="open" href="site_classique.html" target="_blank" rel="noopener">Plein écran ↗</a>
+    </div>
+  </div>
+  <nav id="nav" aria-label="Styles"></nav>
+  <p class="desc" id="desc"></p>
+</header>
+<main id="stage"><iframe id="frame" title="Aperçu du site" src="about:blank"></iframe></main>
+
+<script>
+  const styles = [
+    ['classique',   'Classique',   'Bleu nuit et or, typographie élégante.'],
+    ['chaleureux',  'Chaleureux',  'Tons terre et orange, ambiance conviviale.'],
+    ['corporate',   'Corporate',   'Bleu institutionnel, structuré et sobre.'],
+    ['glass',       'Glass',       'Fond sombre, cartes en verre dépoli.'],
+    ['luxe',        'Luxe',        'Noir, ivoire et doré, très épuré.'],
+    ['scene',       'Scène',       'Ambiance concert, néons cyan et violet.'],
+    ['magazine',    'Magazine',    'Mise en page de journal, rouge et noir.'],
+    ['minimaliste', 'Minimaliste', 'Blanc, beaucoup d\'espace, peu d\'effets.'],
+    ['moderne',     'Moderne',     'Blanc et orange vif, cartes arrondies.'],
+    ['vintage',     'Vintage',     'Affiche ancienne, parchemin et bordeaux.'],
+    ['admin',       'Admin',       'Espace de gestion de l\'association (démo).'],
+  ];
+  const file = id => id === 'admin' ? 'admin.html' : 'site_' + id + '.html';
+  const nav = document.getElementById('nav'), frame = document.getElementById('frame');
+  const desc = document.getElementById('desc'), open = document.getElementById('open'), stage = document.getElementById('stage');
+
+  styles.forEach(([id, label]) => {
+    if (id === 'admin') { const s = document.createElement('span'); s.className = 'sep'; nav.appendChild(s); }
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = label; b.dataset.id = id;
+    b.addEventListener('click', () => { location.hash = id; });
+    nav.appendChild(b);
+  });
+
+  function show() {
+    const id = location.hash.slice(1);
+    const cur = styles.find(s => s[0] === id) || styles[0];
+    frame.src = file(cur[0]);
+    open.href = file(cur[0]);
+    desc.textContent = cur[2];
+    nav.querySelectorAll('button').forEach(b => {
+      const on = b.dataset.id === cur[0];
+      b.setAttribute('aria-current', on);
+      if (on) b.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    });
+  }
+  addEventListener('hashchange', show);
+  show();
+
+  function setView(mobile) {
+    stage.classList.toggle('mobile', mobile);
+    document.getElementById('v-desk').setAttribute('aria-pressed', !mobile);
+    document.getElementById('v-mob').setAttribute('aria-pressed', mobile);
+  }
+  document.getElementById('v-desk').addEventListener('click', () => setView(false));
+  document.getElementById('v-mob').addEventListener('click', () => setView(true));
+</script>
+</body>
+</html>
