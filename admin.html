@@ -232,6 +232,17 @@
     .inst-tabs { display:flex; gap:.5rem; margin-bottom:1.5rem; }
     .inst-tab { padding:.5rem 1.2rem; border-radius:2px; border:2px solid var(--beige); background:var(--white); font-family:'Jost',sans-serif; font-size:.82rem; font-weight:700; color:var(--gray); cursor:pointer; transition:all .2s; }
     .inst-tab.active { background:var(--terra); color:white; border-color:var(--terra); }
+    .mb-filters { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .mb-filter { padding:.45rem 1rem; border-radius:2px; border:2px solid var(--beige); background:var(--white); font-family:'Jost',sans-serif; font-size:.8rem; font-weight:600; color:var(--gray); cursor:pointer; }
+    .mb-filter[aria-pressed="true"] { background:var(--terra); color:white; border-color:var(--terra); }
+    .inst-chips { display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.6rem; }
+    .inst-chip { padding:.35rem .75rem; border:1.5px solid var(--beige); background:var(--white); color:var(--text); font-family:'Jost',sans-serif; font-size:.78rem; cursor:pointer; border-radius:2px; }
+    .inst-chip[aria-pressed="true"] { background:var(--terra-pale); border-color:var(--terra); color:var(--brown); font-weight:600; }
+    .inst-chip[aria-pressed="true"]::before { content:'✓ '; color:var(--terra); }
+    .inst-add { display:flex; gap:.5rem; }
+    .inst-add input { flex:1; min-width:0; }
+    .mb-inst { display:flex; flex-wrap:wrap; gap:.25rem; }
+    .mb-depuis small { display:block; color:var(--gray); font-size:.72rem; }
     .inst-panel { display:none; }
     .inst-panel.active { display:block; }
     .etat-bon { background:var(--olive-pale); color:var(--olive); padding:.2rem .6rem; border-radius:2px; font-size:.7rem; font-weight:800; }
@@ -454,12 +465,17 @@
     <!-- MEMBRES -->
     <div class="page" id="page-membres">
       <div class="section-header">
-        <div><h2>Membres &amp; Bureau</h2><p>Gérez l'équipe dirigeante de l'association</p></div>
+        <div><h2>Membres &amp; Bureau</h2><p>Bureau, musiciens, instruments joués et ancienneté</p></div>
         <button class="btn btn-primary" onclick="openMembreModal()">+ Nouveau membre</button>
       </div>
+      <div class="mb-filters" role="group" aria-label="Filtrer les membres">
+        <button type="button" class="mb-filter" data-f="tous" aria-pressed="true" onclick="setMembreFilter('tous')">Tous</button>
+        <button type="button" class="mb-filter" data-f="bureau" aria-pressed="false" onclick="setMembreFilter('bureau')">Bureau</button>
+        <button type="button" class="mb-filter" data-f="musicien" aria-pressed="false" onclick="setMembreFilter('musicien')">Musiciens</button>
+      </div>
       <div class="table-card">
-        <div class="table-header"><h3>Bureau de l'association</h3></div>
-        <table><thead><tr><th>Avatar</th><th>Nom</th><th>Rôle</th><th>Actions</th></tr></thead>
+        <div class="table-header"><h3 id="membres-table-title">Tous les membres</h3><span class="badge badge-terra" id="membres-count"></span></div>
+        <table><thead><tr><th>Avatar</th><th>Nom</th><th>Catégorie</th><th>Instruments</th><th>Membre depuis</th><th>Actions</th></tr></thead>
         <tbody id="membres-tbody"></tbody></table>
       </div>
       <div class="settings-section" style="margin-top:1.5rem;">
@@ -778,14 +794,27 @@
 <!-- Membre -->
 <div class="modal-overlay" id="membre-modal">
   <div class="modal">
-    <div class="modal-header"><h3 id="membre-modal-title">Nouveau membre du bureau</h3><button class="modal-close" onclick="closeModal('membre-modal')">✕</button></div>
+    <div class="modal-header"><h3 id="membre-modal-title">Nouveau membre</h3><button class="modal-close" onclick="closeModal('membre-modal')">✕</button></div>
     <div class="modal-body">
       <div class="form-grid">
         <div class="form-grid col2">
           <div class="form-group"><label>Prénom</label><input type="text" id="m-prenom" placeholder="Jean-Pierre"></div>
           <div class="form-group"><label>Nom</label><input type="text" id="m-nom" placeholder="Martin"></div>
         </div>
-        <div class="form-group"><label>Rôle</label><input type="text" id="m-role" placeholder="Président"></div>
+        <div class="form-grid col2">
+          <div class="form-group"><label for="m-cat">Catégorie</label>
+            <select id="m-cat" onchange="toggleRoleField()"><option value="musicien">Musicien</option><option value="bureau">Bureau</option></select></div>
+          <div class="form-group"><label for="m-depuis">Membre depuis</label><input type="month" id="m-depuis"></div>
+        </div>
+        <div class="form-group" id="m-role-group"><label for="m-role">Rôle au bureau</label><input type="text" id="m-role" placeholder="Président, Trésorière…"></div>
+        <div class="form-group">
+          <label>Instrument(s) joué(s)</label>
+          <div class="inst-chips" id="m-inst-chips"></div>
+          <div class="inst-add">
+            <input type="text" id="m-inst-new" placeholder="Autre instrument…" aria-label="Autre instrument" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomInstrument();}">
+            <button type="button" class="btn btn-outline btn-sm" onclick="addCustomInstrument()">+ Ajouter</button>
+          </div>
+        </div>
         <div class="form-group"><label>Initiales (2 lettres)</label><input type="text" id="m-initiales" maxlength="2" placeholder="JM"></div>
         <div class="form-group">
           <label>Couleur de l'avatar</label>
@@ -968,14 +997,22 @@ let pastConcerts = [
   {id:3,nom:"Tournée des Hauts-de-France",date:"Juin 2025"},
   {id:4,nom:"Concert de Printemps — Salle des fêtes",date:"15 mars 2025"}
 ];
+// categorie : "bureau" ou "musicien" · instruments : liste · depuis : "AAAA-MM"
 let membres = [
-  {id:1,prenom:"Jean-Pierre",nom:"Martin",role:"Président",initiales:"JM",color:"terra"},
-  {id:2,prenom:"Sophie",nom:"Delacroix",role:"Vice-Présidente",initiales:"SD",color:"olive"},
-  {id:3,prenom:"Mathieu",nom:"Leroy",role:"Secrétaire",initiales:"ML",color:"brown"},
-  {id:4,prenom:"Isabelle",nom:"Fontaine",role:"Trésorière",initiales:"IF",color:"olive"},
-  {id:5,prenom:"François",nom:"Beaumont",role:"Chef d'orchestre",initiales:"FB",color:"terra"},
-  {id:6,prenom:"Clara",nom:"Bernard",role:"Responsable jeunes",initiales:"CB",color:"brown"}
+  {id:1,prenom:"Jean-Pierre",nom:"Martin",role:"Président",initiales:"JM",color:"terra",categorie:"bureau",instruments:["Trompette"],depuis:"1998-09"},
+  {id:2,prenom:"Sophie",nom:"Delacroix",role:"Vice-Présidente",initiales:"SD",color:"olive",categorie:"bureau",instruments:["Clarinette"],depuis:"2005-09"},
+  {id:3,prenom:"Mathieu",nom:"Leroy",role:"Secrétaire",initiales:"ML",color:"brown",categorie:"bureau",instruments:["Saxophone alto"],depuis:"2012-01"},
+  {id:4,prenom:"Isabelle",nom:"Fontaine",role:"Trésorière",initiales:"IF",color:"olive",categorie:"bureau",instruments:["Flûte traversière"],depuis:"2009-09"},
+  {id:5,prenom:"François",nom:"Beaumont",role:"Chef d'orchestre",initiales:"FB",color:"terra",categorie:"bureau",instruments:[],depuis:"2001-09"},
+  {id:6,prenom:"Clara",nom:"Bernard",role:"Responsable jeunes",initiales:"CB",color:"brown",categorie:"bureau",instruments:["Percussions"],depuis:"2016-09"},
+  {id:7,prenom:"Hugo",nom:"Lambert",role:"",initiales:"HL",color:"terra",categorie:"musicien",instruments:["Trombone"],depuis:"2019-09"},
+  {id:8,prenom:"Léa",nom:"Caron",role:"",initiales:"LC",color:"olive",categorie:"musicien",instruments:["Clarinette","Saxophone alto"],depuis:"2022-01"},
+  {id:9,prenom:"Bernard",nom:"Dufour",role:"",initiales:"BD",color:"brown",categorie:"musicien",instruments:["Tuba"],depuis:"1985-09"}
 ];
+// instruments proposés dans la fiche membre (on peut en ajouter depuis la fiche)
+let catalogueInstruments = ["Piccolo","Flûte traversière","Hautbois","Basson","Clarinette","Clarinette basse","Saxophone soprano","Saxophone alto","Saxophone ténor","Saxophone baryton","Trompette","Cornet","Bugle","Cor d'harmonie","Trombone","Euphonium / Baryton","Tuba","Contrebasse","Percussions","Batterie","Timbales","Xylophone / Claviers"];
+let membreFilter = "tous";
+let mInstSel = [];
 let instruments = ["Flûte traversière","Clarinette","Saxophone alto","Saxophone ténor","Trompette","Cor d'harmonie","Trombone","Euphonium","Percussions"];
 let candidatures = [
   {id:1,prenom:"Lucas",nom:"Moreau",email:"lucas.m@email.fr",tel:"06 11 22 33 44",instrument:"Trompette",niveau:"Intermédiaire",message:"Passionné de musique depuis 10 ans, je cherche un ensemble convivial.",date:"02 juin 2026",status:"new"},
@@ -1158,7 +1195,7 @@ function renderDashboard(){
 
   const avatarBg={terra:'var(--terra-pale)',olive:'var(--olive-pale)',brown:'var(--beige)'};
   const avatarCol={terra:'var(--terra)',olive:'var(--olive)',brown:'var(--brown)'};
-  document.getElementById('dash-bureau').innerHTML=membres.map(m=>`
+  document.getElementById('dash-bureau').innerHTML=membres.filter(m=>m.categorie==='bureau').map(m=>`
     <div class="widget-item">
       <div class="wi-icon" style="background:${avatarBg[m.color]};color:${avatarCol[m.color]};font-size:.75rem;font-weight:800;">${m.initiales}</div>
       <div><div class="wi-label">${m.prenom} ${m.nom}</div><div class="wi-sub">${m.role}</div></div>
@@ -1185,19 +1222,38 @@ function renderAgenda(){
     <td><button class="btn-icon del" onclick="deletePastConcert(${c.id})">🗑️</button></td></tr>`).join('');
 }
 
+function escHtml(t){ return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function formatDepuis(d){
+  if(!d) return '—';
+  const [y,m]=d.split('-').map(Number);
+  const mois=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+  const now=new Date(); const ans=now.getFullYear()-y-((now.getMonth()+1)<m?1:0);
+  const duree=ans<1?"moins d'un an":ans===1?'1 an':ans+' ans';
+  return `${mois[m-1]||''} ${y}<small>${duree}</small>`;
+}
+function setMembreFilter(f){
+  membreFilter=f;
+  document.querySelectorAll('.mb-filter').forEach(b=>b.setAttribute('aria-pressed',b.dataset.f===f));
+  renderMembres();
+}
 function renderMembres(){
   const ab={terra:'var(--terra-pale)',olive:'var(--olive-pale)',brown:'var(--beige)'};
   const ac={terra:'var(--terra)',olive:'var(--olive)',brown:'var(--brown)'};
-  document.getElementById('membres-tbody').innerHTML=membres.map(m=>`
+  const liste=membres.filter(m=>membreFilter==='tous'||m.categorie===membreFilter);
+  document.getElementById('membres-table-title').textContent={tous:'Tous les membres',bureau:"Bureau de l'association",musicien:'Musiciens'}[membreFilter];
+  document.getElementById('membres-count').textContent=liste.length+' membre(s)';
+  document.getElementById('membres-tbody').innerHTML=liste.length?liste.map(m=>`
     <tr>
-      <td><div style="width:36px;height:36px;border-radius:50%;background:${ab[m.color]};color:${ac[m.color]};display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;">${m.initiales}</div></td>
-      <td><strong>${m.prenom} ${m.nom}</strong></td>
-      <td><span class="badge badge-brown">${m.role}</span></td>
+      <td><div style="width:36px;height:36px;border-radius:50%;background:${ab[m.color]};color:${ac[m.color]};display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;">${escHtml(m.initiales)}</div></td>
+      <td><strong>${escHtml(m.prenom)} ${escHtml(m.nom)}</strong></td>
+      <td>${m.categorie==='bureau'?`<span class="badge badge-terra">${escHtml(m.role||'Bureau')}</span>`:'<span class="badge badge-brown">Musicien</span>'}</td>
+      <td><div class="mb-inst">${(m.instruments||[]).map(i=>`<span class="badge badge-olive">${escHtml(i)}</span>`).join('')||'<span style="color:var(--gray)">—</span>'}</div></td>
+      <td class="mb-depuis">${formatDepuis(m.depuis)}</td>
       <td style="white-space:nowrap;">
-        <button class="btn-icon" onclick="editMembre(${m.id})">✏️</button>
-        <button class="btn-icon del" onclick="deleteMembre(${m.id})">🗑️</button>
+        <button class="btn-icon" onclick="editMembre(${m.id})" aria-label="Modifier">✏️</button>
+        <button class="btn-icon del" onclick="deleteMembre(${m.id})" aria-label="Supprimer">🗑️</button>
       </td>
-    </tr>`).join('');
+    </tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--gray);padding:1.5rem;">Aucun membre dans cette catégorie</td></tr>';
   renderInstruments();
 }
 
@@ -1400,16 +1456,47 @@ function selectColor(el){
   document.querySelectorAll('.color-opt').forEach(o=>o.classList.remove('selected'));
   el.classList.add('selected'); selectedColor=el.dataset.color;
 }
+function toggleRoleField(){
+  document.getElementById('m-role-group').style.display=document.getElementById('m-cat').value==='bureau'?'':'none';
+}
+function renderInstChips(){
+  const all=[...new Set([...catalogueInstruments,...mInstSel])];
+  const box=document.getElementById('m-inst-chips');
+  box.innerHTML=all.map((n,i)=>`<button type="button" class="inst-chip" data-i="${i}" aria-pressed="${mInstSel.includes(n)}">${escHtml(n)}</button>`).join('');
+  box.querySelectorAll('.inst-chip').forEach(b=>b.onclick=()=>{
+    const n=all[+b.dataset.i];
+    mInstSel=mInstSel.includes(n)?mInstSel.filter(x=>x!==n):[...mInstSel,n];
+    b.setAttribute('aria-pressed',mInstSel.includes(n));
+  });
+}
+function addCustomInstrument(){
+  const inp=document.getElementById('m-inst-new'); const n=inp.value.trim();
+  if(!n) return;
+  const exist=catalogueInstruments.find(x=>x.toLowerCase()===n.toLowerCase());
+  const nom=exist||n;
+  if(!exist) catalogueInstruments.push(nom);
+  if(!mInstSel.includes(nom)) mInstSel.push(nom);
+  inp.value=''; renderInstChips();
+  showToast(exist?'Instrument sélectionné':'Instrument « '+nom+' » ajouté à la liste','success');
+}
+function fillMembreForm(m){
+  document.getElementById('m-prenom').value=m.prenom||''; document.getElementById('m-nom').value=m.nom||'';
+  document.getElementById('m-role').value=m.role||''; document.getElementById('m-initiales').value=m.initiales||'';
+  document.getElementById('m-cat').value=m.categorie||'musicien';
+  document.getElementById('m-depuis').value=m.depuis||'';
+  document.getElementById('m-inst-new').value='';
+  mInstSel=[...(m.instruments||[])];
+  toggleRoleField(); renderInstChips();
+}
 function openMembreModal(){
-  document.getElementById('membre-modal-title').textContent='Nouveau membre du bureau';
-  ['m-prenom','m-nom','m-role','m-initiales'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('membre-modal-title').textContent='Nouveau membre';
+  fillMembreForm({categorie:membreFilter==='bureau'?'bureau':'musicien'});
   selectedColor='terra'; document.querySelectorAll('.color-opt').forEach((o,i)=>o.classList.toggle('selected',i===0));
   openModal('membre-modal');
 }
 function editMembre(id){
   const m=membres.find(x=>x.id===id);
-  document.getElementById('m-prenom').value=m.prenom; document.getElementById('m-nom').value=m.nom;
-  document.getElementById('m-role').value=m.role; document.getElementById('m-initiales').value=m.initiales;
+  fillMembreForm(m);
   selectedColor=m.color; document.querySelectorAll('.color-opt').forEach(o=>o.classList.toggle('selected',o.dataset.color===m.color));
   document.getElementById('membre-modal-title').textContent='Modifier le membre';
   document.getElementById('membre-modal').classList.add('open'); editingId=id;
@@ -1419,11 +1506,14 @@ function saveMembre(){
   const nom=document.getElementById('m-nom').value.trim();
   if(!prenom||!nom){showToast('Prénom et nom requis','error'); return;}
   const init=document.getElementById('m-initiales').value.trim()||(prenom[0]+nom[0]).toUpperCase();
-  const obj={id:editingId||Date.now(),prenom,nom,role:document.getElementById('m-role').value.trim(),initiales:init,color:selectedColor};
+  const categorie=document.getElementById('m-cat').value;
+  const role=categorie==='bureau'?document.getElementById('m-role').value.trim():'';
+  if(categorie==='bureau'&&!role){showToast('Indiquez le rôle au bureau','error'); return;}
+  const obj={id:editingId||Date.now(),prenom,nom,role,initiales:init,color:selectedColor,categorie,instruments:[...mInstSel],depuis:document.getElementById('m-depuis').value};
   if(editingId){const i=membres.findIndex(x=>x.id===editingId); membres[i]=obj;}
   else membres.push(obj);
   closeModal('membre-modal'); renderMembres(); renderDashboard();
-  logActivity(editingId?'edit':'add', editingId?'Membre modifié':'Membre ajouté', obj.prenom+' '+obj.nom+' — '+obj.role);
+  logActivity(editingId?'edit':'add', editingId?'Membre modifié':'Membre ajouté', obj.prenom+' '+obj.nom+' — '+(obj.role||'Musicien'));
   showToast(editingId?'Membre modifié !':'Membre ajouté !','success');
 }
 function deleteMembre(id){ if(!confirm('Supprimer ce membre ?')) return; membres=membres.filter(m=>m.id!==id); renderMembres(); renderDashboard(); showToast('Membre supprimé','success'); }
