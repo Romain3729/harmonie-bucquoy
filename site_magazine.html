@@ -491,14 +491,14 @@
         <div class="hero-main">
           <div class="hero-cat"><span class="cat-label">Association musicale</span></div>
           <h1 class="hero-title">L'Harmonie<em>de Bucquoy</em></h1>
-          <p class="hero-deck">Depuis 1892, 45 musiciens passionnés au cœur du Pas-de-Calais — une histoire centenaire de musique partagée.</p>
+          <p class="hero-deck">Depuis 1892, <span data-nb-musiciens>45</span> musiciens passionnés au cœur du Pas-de-Calais — une histoire centenaire de musique partagée.</p>
           <p class="hero-text">Fondée il y a plus de 130 ans, l'Harmonie de Bucquoy rassemble chaque semaine amateurs et passionnés autour d'un répertoire riche et varié. Cuivres, bois, percussions : une famille musicale ouverte à tous.</p>
           <div class="hero-actions">
             <a href="#rejoindre" class="btn-red">Rejoindre l'harmonie</a>
             <a href="#agenda" class="btn-outline">Programme 2026</a>
           </div>
           <div class="hero-metrics">
-            <div class="hm-item"><div class="hm-num">45</div><div class="hm-label">Musiciens actifs</div></div>
+            <div class="hm-item"><div class="hm-num"><span data-nb-musiciens>45</span></div><div class="hm-label">Musiciens actifs</div></div>
             <div class="hm-item"><div class="hm-num">134</div><div class="hm-label">Ans d'existence</div></div>
             <div class="hm-item"><div class="hm-num">12+</div><div class="hm-label">Concerts / an</div></div>
           </div>
@@ -544,7 +544,7 @@
           <p class="hm-lead">Fondée en 1892, l'Harmonie de Bucquoy incarne depuis plus d'un siècle l'idéal d'une musique accessible à tous, ancrée dans sa communauté et tournée vers l'excellence.</p>
           <div class="hm-body">
             <p>Fondée en <strong>1892</strong> par un groupe de passionnés du canton de Bucquoy, l'Harmonie de Bucquoy est l'une des plus anciennes sociétés musicales du Pas-de-Calais. Traversant deux guerres mondiales, les crises économiques et les transformations sociales, notre association a su préserver l'essentiel.</p>
-            <p>Au fil des décennies, l'harmonie est passée de 20 musiciens amateurs à un ensemble de <strong>45 instrumentistes</strong> de tous âges et niveaux. En 2005, la création d'une section jeunes ouvre l'harmonie aux enfants dès 8 ans.</p>
+            <p>Au fil des décennies, l'harmonie est passée de 20 musiciens amateurs à un ensemble de <strong><span data-nb-musiciens>45</span> instrumentistes</strong> de tous âges et niveaux. En 2005, la création d'une section jeunes ouvre l'harmonie aux enfants dès 8 ans.</p>
             <div class="pullquote-mag">
               <p>« La musique nous rassemble, nous élève, nous donne envie de partager ce que nous avons de meilleur. C'est ce que l'Harmonie de Bucquoy incarne depuis plus de 130 ans. »</p>
               <cite>— Jean-Pierre Martin, Président</cite>
@@ -561,7 +561,7 @@
         <div class="sidebar-mag">
           <div class="bureau-mag">
             <div class="bm-title">Bureau &amp; Direction</div>
-            <div class="bm-row"><span class="bm-name">Jean-Pierre Martin</span><span class="bm-role">Président</span></div>
+            <div data-bureau-row class="bm-row"><span class="bm-name" data-b-nom>Jean-Pierre Martin</span><span class="bm-role" data-b-role>Président</span></div>
             <div class="bm-row"><span class="bm-name">Sophie Delacroix</span><span class="bm-role">Vice-Présidente</span></div>
             <div class="bm-row"><span class="bm-name">Mathieu Leroy</span><span class="bm-role">Secrétaire</span></div>
             <div class="bm-row"><span class="bm-name">Isabelle Fontaine</span><span class="bm-role">Trésorière</span></div>
@@ -768,7 +768,7 @@
         <div class="ftm-brand">
           <div class="ftm-name">L'Harmonie de Bucquoy</div>
           <div class="ftm-sub">Association loi 1901 · Fondée en 1892</div>
-          <p class="ftm-desc">45 musiciens amateurs passionnés réunis chaque semaine au cœur du Pas-de-Calais depuis plus de 130 ans.</p>
+          <p class="ftm-desc"><span data-nb-musiciens>45</span> musiciens amateurs passionnés réunis chaque semaine au cœur du Pas-de-Calais depuis plus de 130 ans.</p>
         </div>
         <div class="ftm-col"><h4>Rubriques</h4><ul><li><a href="#histoire">Notre histoire</a></li><li><a href="#rejoindre">Rejoindre</a></li><li><a href="#agenda">Agenda</a></li><li><a href="#galerie">Galerie</a></li></ul></div>
         <div class="ftm-col"><h4>Informations</h4><ul><li><a href="#contact">Contact</a></li><li><a href="#partenaires">Partenaires</a></li><li><a href="#">Mentions légales</a></li></ul></div>
@@ -781,5 +781,50 @@
     </div>
   </footer>
 
+<script>
+// Nombre de musiciens : repris de la page admin (enregistré dans ce navigateur, clé 'harmonie-nb-musiciens')
+(function(){
+  function maj(){
+    try{
+      var n=localStorage.getItem('harmonie-nb-musiciens');
+      if(n!==null && /^\d+$/.test(n)) document.querySelectorAll('[data-nb-musiciens]').forEach(function(e){ e.textContent=n; });
+    }catch(e){}
+  }
+  maj();
+  addEventListener('storage',function(e){ if(e.key==='harmonie-nb-musiciens') maj(); });
+})();
+</script>
+<script>
+// Bureau & Direction : liste reprise de la page admin (membres de catégorie Bureau, enregistrés dans ce navigateur)
+(function(){
+  function maj(){
+    var data;
+    try{ data=JSON.parse(localStorage.getItem('harmonie-membres')||'null'); }catch(e){ return; }
+    if(!data||!Array.isArray(data.membres)) return;
+    var bureau=data.membres.filter(function(m){ return m.categorie==='bureau'; });
+    document.querySelectorAll('[data-bureau-row]').forEach(function(tpl){
+      var parent=tpl.parentElement, cls=(tpl.className||'').split(' ')[0];
+      var rows=[].filter.call(parent.children,function(el){ return el.tagName===tpl.tagName&&(el.className||'').split(' ')[0]===cls; });
+      var hadAlt=rows.some(function(el){ return el.classList.contains('alt'); });
+      var model=tpl.cloneNode(true);
+      rows.forEach(function(el){ if(el!==tpl) el.remove(); });
+      var anchor=tpl;
+      bureau.forEach(function(m,i){
+        var row=model.cloneNode(true);
+        row.removeAttribute('data-bureau-row'); row.setAttribute('data-bureau-gen',''); row.style.display='';
+        var nom=row.querySelector('[data-b-nom]'), role=row.querySelector('[data-b-role]'), ini=row.querySelector('[data-b-init]');
+        if(nom) nom.textContent=(m.prenom||'')+' '+(m.nom||'');
+        if(role) role.textContent=m.role||'';
+        if(ini){ ini.textContent=m.initiales||''; ['terra','olive','brown'].forEach(function(c){ ini.classList.remove(c); }); if(m.color) ini.classList.add(m.color); }
+        if(hadAlt) row.classList.toggle('alt',i%2===1);
+        anchor.after(row); anchor=row;
+      });
+      tpl.style.display='none';
+    });
+  }
+  maj();
+  addEventListener('storage',function(e){ if(e.key==='harmonie-membres') maj(); });
+})();
+</script>
 </body>
 </html>

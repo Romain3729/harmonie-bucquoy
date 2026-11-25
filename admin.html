@@ -413,7 +413,7 @@
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div class="stats-grid">
-        <div class="stat-card"><div class="stat-val">45</div><div class="stat-label">Musiciens actifs</div><div class="stat-sub">+3 cette saison</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-musiciens">45</div><div class="stat-label">Musiciens actifs</div><div class="stat-sub">Affiché sur le site</div></div>
         <div class="stat-card"><div class="stat-val" id="stat-concerts">4</div><div class="stat-label">Concerts à venir</div><div class="stat-sub">Saison 2026</div></div>
         <div class="stat-card"><div class="stat-val" id="stat-cand">3</div><div class="stat-label">Candidatures en attente</div><div class="stat-sub">À traiter</div></div>
         <div class="stat-card"><div class="stat-val" id="stat-msg">2</div><div class="stat-label">Messages non lus</div><div class="stat-sub">Contact</div></div>
@@ -1012,6 +1012,23 @@ let membres = [
 let catalogueInstruments = ["Piccolo","Flûte traversière","Hautbois","Basson","Clarinette","Clarinette basse","Saxophone soprano","Saxophone alto","Saxophone ténor","Saxophone baryton","Trompette","Cornet","Bugle","Cor d'harmonie","Trombone","Euphonium / Baryton","Tuba","Contrebasse","Percussions","Batterie","Timbales","Xylophone / Claviers"];
 let membreFilter = "tous";
 let mInstSel = [];
+
+// Membres gardés dans ce navigateur ; le nombre de musiciens est repris par les pages du site.
+const STORE_MEMBRES = 'harmonie-membres', STORE_NB = 'harmonie-nb-musiciens';
+try{
+  const saved = JSON.parse(localStorage.getItem(STORE_MEMBRES) || 'null');
+  if(saved && Array.isArray(saved.membres)) membres = saved.membres;
+  if(saved && Array.isArray(saved.catalogue)) catalogueInstruments = saved.catalogue;
+}catch(e){}
+// musicien = catégorie Musicien, ou membre du bureau qui joue d'un instrument
+function nbMusiciens(){ return membres.filter(m=>m.categorie==='musicien'||(m.instruments||[]).length).length; }
+function saveMembresStore(){
+  try{
+    localStorage.setItem(STORE_MEMBRES, JSON.stringify({membres, catalogue:catalogueInstruments}));
+    localStorage.setItem(STORE_NB, String(nbMusiciens()));
+  }catch(e){ showToast("Enregistrement impossible dans ce navigateur",'error'); }
+}
+saveMembresStore(); // publie la liste et le nombre pour les pages du site
 let instruments = ["Flûte traversière","Clarinette","Saxophone alto","Saxophone ténor","Trompette","Cor d'harmonie","Trombone","Euphonium","Percussions"];
 let candidatures = [
   {id:1,prenom:"Lucas",nom:"Moreau",email:"lucas.m@email.fr",tel:"06 11 22 33 44",instrument:"Trompette",niveau:"Intermédiaire",message:"Passionné de musique depuis 10 ans, je cherche un ensemble convivial.",date:"02 juin 2026",status:"new"},
@@ -1194,6 +1211,7 @@ function renderDashboard(){
 
   const avatarBg={terra:'var(--terra-pale)',olive:'var(--olive-pale)',brown:'var(--beige)'};
   const avatarCol={terra:'var(--terra)',olive:'var(--olive)',brown:'var(--brown)'};
+  document.getElementById('stat-musiciens').textContent=nbMusiciens();
   document.getElementById('dash-bureau').innerHTML=membres.filter(m=>m.categorie==='bureau').map(m=>`
     <div class="widget-item">
       <div class="wi-icon" style="background:${avatarBg[m.color]};color:${avatarCol[m.color]};font-size:.75rem;font-weight:800;">${m.initiales}</div>
@@ -1473,7 +1491,7 @@ function addCustomInstrument(){
   if(!n) return;
   const exist=catalogueInstruments.find(x=>x.toLowerCase()===n.toLowerCase());
   const nom=exist||n;
-  if(!exist) catalogueInstruments.push(nom);
+  if(!exist){ catalogueInstruments.push(nom); saveMembresStore(); }
   if(!mInstSel.includes(nom)) mInstSel.push(nom);
   inp.value=''; renderInstChips();
   showToast(exist?'Instrument sélectionné':'Instrument « '+nom+' » ajouté à la liste','success');
@@ -1511,11 +1529,12 @@ function saveMembre(){
   const obj={id:editingId||Date.now(),prenom,nom,role,initiales:init,color:selectedColor,categorie,instruments:[...mInstSel],depuis:document.getElementById('m-depuis').value};
   if(editingId){const i=membres.findIndex(x=>x.id===editingId); membres[i]=obj;}
   else membres.push(obj);
+  saveMembresStore();
   closeModal('membre-modal'); renderMembres(); renderDashboard();
   logActivity(editingId?'edit':'add', editingId?'Membre modifié':'Membre ajouté', obj.prenom+' '+obj.nom+' — '+(obj.role||'Musicien'));
   showToast(editingId?'Membre modifié !':'Membre ajouté !','success');
 }
-function deleteMembre(id){ if(!confirm('Supprimer ce membre ?')) return; membres=membres.filter(m=>m.id!==id); renderMembres(); renderDashboard(); showToast('Membre supprimé','success'); }
+function deleteMembre(id){ if(!confirm('Supprimer ce membre ?')) return; membres=membres.filter(m=>m.id!==id); saveMembresStore(); renderMembres(); renderDashboard(); showToast('Membre supprimé','success'); }
 
 // ── MÉDIAS ────────────────────────────────────────────────────────────────────
 function saveMedia(){

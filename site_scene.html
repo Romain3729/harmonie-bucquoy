@@ -918,7 +918,7 @@
         <span class="line-cyan">Bucquoy</span>
       </h1>
       <p class="hero-sub">
-        45 musiciens passionnés, 130 ans de tradition musicale. Cuivres, bois, percussions —
+        <span data-nb-musiciens>45</span> musiciens passionnés, 130 ans de tradition musicale. Cuivres, bois, percussions —
         une communion sonore au cœur du Pas-de-Calais.
       </p>
       <div class="hero-actions">
@@ -927,7 +927,7 @@
       </div>
       <div class="hero-stats">
         <div class="hs-item">
-          <div class="hs-num">45</div>
+          <div class="hs-num"><span data-nb-musiciens>45</span></div>
           <div class="hs-label">Musiciens</div>
         </div>
         <div class="hs-item">
@@ -997,7 +997,7 @@
             <div class="ts-item">
               <div class="ts-dot"></div>
               <div class="ts-year">2026 — Aujourd'hui</div>
-              <div class="ts-title">45 musiciens actifs</div>
+              <div class="ts-title"><span data-nb-musiciens>45</span> musiciens actifs</div>
               <div class="ts-text">L'harmonie est plus vivante que jamais, ouverte sur le monde, fière de son héritage et tournée vers l'avenir.</div>
             </div>
           </div>
@@ -1009,7 +1009,7 @@
         <div>
           <div class="section-eyebrow" style="margin-bottom:1rem;">Bureau &amp; Direction</div>
           <div class="bureau-scene">
-            <div class="bs-item"><span class="bs-name">Jean-Pierre Martin</span><span class="bs-role">Président</span></div>
+            <div data-bureau-row class="bs-item"><span class="bs-name" data-b-nom>Jean-Pierre Martin</span><span class="bs-role" data-b-role>Président</span></div>
             <div class="bs-item"><span class="bs-name">Sophie Delacroix</span><span class="bs-role">Vice-Présidente</span></div>
             <div class="bs-item"><span class="bs-name">Mathieu Leroy</span><span class="bs-role">Secrétaire</span></div>
             <div class="bs-item"><span class="bs-name">Isabelle Fontaine</span><span class="bs-role">Trésorière</span></div>
@@ -1274,5 +1274,50 @@
     </div>
   </footer>
 
+<script>
+// Nombre de musiciens : repris de la page admin (enregistré dans ce navigateur, clé 'harmonie-nb-musiciens')
+(function(){
+  function maj(){
+    try{
+      var n=localStorage.getItem('harmonie-nb-musiciens');
+      if(n!==null && /^\d+$/.test(n)) document.querySelectorAll('[data-nb-musiciens]').forEach(function(e){ e.textContent=n; });
+    }catch(e){}
+  }
+  maj();
+  addEventListener('storage',function(e){ if(e.key==='harmonie-nb-musiciens') maj(); });
+})();
+</script>
+<script>
+// Bureau & Direction : liste reprise de la page admin (membres de catégorie Bureau, enregistrés dans ce navigateur)
+(function(){
+  function maj(){
+    var data;
+    try{ data=JSON.parse(localStorage.getItem('harmonie-membres')||'null'); }catch(e){ return; }
+    if(!data||!Array.isArray(data.membres)) return;
+    var bureau=data.membres.filter(function(m){ return m.categorie==='bureau'; });
+    document.querySelectorAll('[data-bureau-row]').forEach(function(tpl){
+      var parent=tpl.parentElement, cls=(tpl.className||'').split(' ')[0];
+      var rows=[].filter.call(parent.children,function(el){ return el.tagName===tpl.tagName&&(el.className||'').split(' ')[0]===cls; });
+      var hadAlt=rows.some(function(el){ return el.classList.contains('alt'); });
+      var model=tpl.cloneNode(true);
+      rows.forEach(function(el){ if(el!==tpl) el.remove(); });
+      var anchor=tpl;
+      bureau.forEach(function(m,i){
+        var row=model.cloneNode(true);
+        row.removeAttribute('data-bureau-row'); row.setAttribute('data-bureau-gen',''); row.style.display='';
+        var nom=row.querySelector('[data-b-nom]'), role=row.querySelector('[data-b-role]'), ini=row.querySelector('[data-b-init]');
+        if(nom) nom.textContent=(m.prenom||'')+' '+(m.nom||'');
+        if(role) role.textContent=m.role||'';
+        if(ini){ ini.textContent=m.initiales||''; ['terra','olive','brown'].forEach(function(c){ ini.classList.remove(c); }); if(m.color) ini.classList.add(m.color); }
+        if(hadAlt) row.classList.toggle('alt',i%2===1);
+        anchor.after(row); anchor=row;
+      });
+      tpl.style.display='none';
+    });
+  }
+  maj();
+  addEventListener('storage',function(e){ if(e.key==='harmonie-membres') maj(); });
+})();
+</script>
 </body>
 </html>
