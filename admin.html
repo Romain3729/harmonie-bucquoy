@@ -719,8 +719,7 @@
     <!-- LOGS -->
     <div class="page" id="page-logs">
       <div class="section-header">
-        <div><h2>Logs d'activité</h2><p>Historique de toutes les actions effectuées dans l'admin</p></div>
-        <button class="btn btn-danger btn-sm" onclick="clearLogs()">🗑️ Vider les logs</button>
+        <div><h2>Logs d'activité</h2><p>Historique de toutes les actions effectuées dans l'admin · non supprimable</p></div>
       </div>
       <div class="settings-section">
         <div class="log-filters">
@@ -1078,7 +1077,7 @@ let instrumentsAsso = [
   {id:4, nom:"Trombone Bach TB200B", serie:"TB200B-015", etat:"mauvais", statut:"reparation", preteA:null, depuis:null},
   {id:5, nom:"Cor d'harmonie Holton H177", serie:"H177-003", etat:"bon", statut:"prete", preteA:2, depuis:"15 sept. 2025"}
 ];
-let logs = [
+const logs = [
   {id:1, type:"auth", action:"Connexion admin", detail:"Session ouverte", time:now()},
   {id:2, type:"edit", action:"Membre modifié", detail:"François Beaumont — Chef d'orchestre", time:"03/06/2026 14:35"},
   {id:3, type:"add", action:"Concert ajouté", detail:"Concert de la Saint-Jean · 14 Juin 2026", time:"02/06/2026 09:12"},
@@ -1832,8 +1831,8 @@ function renderLogs(){
     <div class="log-item">
       <div class="log-icon ${l.type}">${logEmoji[l.type]||'•'}</div>
       <div style="flex:1;">
-        <div class="log-action">${l.action}</div>
-        <div class="log-detail">${l.detail}</div>
+        <div class="log-action">${escHtml(l.action)}</div>
+        <div class="log-detail">${escHtml(l.detail)}</div>
       </div>
       <div class="log-time">${l.time}</div>
     </div>`).join('')||'<div class="empty-state"><div class="icon">📋</div><p>Aucun log dans cette catégorie</p></div>';
@@ -1843,12 +1842,6 @@ function filterLogs(type,btn){
   document.querySelectorAll('.log-filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderLogs();
-}
-function clearLogs(){
-  if(!confirm('Vider tous les logs ?')) return;
-  logs=[];
-  renderLogs();
-  showToast('Logs vidés','success');
 }
 
 // ── TOAST ─────────────────────────────────────────────────────────────────────
